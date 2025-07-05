@@ -44,13 +44,7 @@
 2. **Open the solution** in Visual Studio.
 
 3. **Configure the database connection string** in `Web.config`:
-   ```xml
-   <connectionStrings>
-     <add name="DefaultConnection" 
-          connectionString="Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\CompanyDB.mdf;Integrated Security=True" 
-          providerName="System.Data.SqlClient" />
-   </connectionStrings>
-   ```
+
 
 4. **Apply EF Migrations**: 
    Open the Package Manager Console and run:
@@ -73,9 +67,6 @@ CompanySystemManager/
 └── App_Data/             # Database files
 ```
 
-## 📸 Screenshots
-
-*Add screenshots of your application here to showcase the UI*
 
 ## 🗃️ Database Schema
 
@@ -110,9 +101,6 @@ The application uses the following main entities:
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 👤 Author
 
@@ -120,14 +108,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - 🌐 [GitHub Profile](https://github.com/Omar-Badwilan)
 - 📧 Email: badwilanomar@gmail.com
-- 💼 [LinkedIn](https://linkedin.com/in/omar-badwilan) *(if applicable)*
 
 ## 🙏 Acknowledgments
 
 - Thanks to the ASP.NET MVC community for excellent documentation
 - Bootstrap for responsive design components
 - Entity Framework for simplified data access
-
 ---
 
 ⭐ **If you found this project helpful, please consider giving it a star!** ⭐
