@@ -1,8 +1,8 @@
-﻿using CompanySystem.DataAccessLayer.Data.Configurations;
+﻿using CompanySystem.DataAccessLayer.Models.Departments;
 using System.Reflection;
 
 
-namespace CompanySystem.DataAccessLayer.Data.Contexts
+namespace CompanySystem.DataAccessLayer.Persistence.Data.Contexts
 {
     public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
     {

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace CompanySystem.DataAccessLayer.Models
 {
     public class BaseEntity
@@ -11,7 +6,7 @@ namespace CompanySystem.DataAccessLayer.Models
         public int Id { get; set; } // pk
         public int CreatedBy { get; set; } //User Id
 
-        public DateTime CreatedOn { get; set; }
+        public DateTime CreatedOn { get; set; } //time record was created on db
 
         public int LastModifiedBy { get; set; } //User Id
 
