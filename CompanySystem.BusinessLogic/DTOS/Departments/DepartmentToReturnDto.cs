@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+
 
 namespace CompanySystem.BusinessLogic.DTOS.Departments
 {
@@ -11,8 +8,8 @@ namespace CompanySystem.BusinessLogic.DTOS.Departments
         public int Id { get; set; } // Pk
         public string Name { get; set; } = null!; // Department Name 
         public string Code { get; set; } = null!;
-        public string Description { get; set; } = null!;// Department Description
 
+        [Display(Name ="Date of Creation")]
         public DateOnly CreationDate { get; set; }
     }
 }

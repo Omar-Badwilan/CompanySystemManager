@@ -1,3 +1,4 @@
+using CompanySystem.BusinessLogic.Services.Departments;
 using CompanySystem.DataAccessLayer.Persistence.Data.Contexts;
 using CompanySystem.DataAccessLayer.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,9 @@ namespace CompanySystem.Presentation
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
-            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();  
+
+            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            builder.Services.AddScoped<IDepartmentService, DepartmentService>();
             #endregion
 
             var app = builder.Build();

@@ -2,8 +2,8 @@
 {
     public class CreatedDepartmentDto
     {
-        public string Code { get; set; } = null!;
         public string Name { get; set; } = null!; // Department Name 
+        public string Code { get; set; } = null!;
 
         public string Description { get; set; } = null!; // Department Description
 
