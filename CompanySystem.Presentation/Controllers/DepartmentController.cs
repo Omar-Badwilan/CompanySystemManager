@@ -66,5 +66,17 @@ namespace CompanySystem.Presentation.Controllers
             }
 
         }
+
+        [HttpGet] //GET: /Department/Details
+        public IActionResult Details(int? id)
+        {
+            if (id is null)
+                return BadRequest();
+            var department = _departmentService.GetDepartmentsById(id.Value);
+
+            if(department is null)
+                return NotFound();
+            return View(department);
+        }
     }
 }
