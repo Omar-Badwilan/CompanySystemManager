@@ -1,3 +1,8 @@
+using CompanySystem.BusinessLogic.Services.Departments;
+using CompanySystem.DataAccessLayer.Persistence.Data.Contexts;
+using CompanySystem.DataAccessLayer.Persistence.Repositories;
+using Microsoft.EntityFrameworkCore;
+
 namespace CompanySystem.Presentation
 {
     public class Program
@@ -6,9 +11,18 @@ namespace CompanySystem.Presentation
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            #region Add services to the container.
+            #region Configure Services
 
-            builder.Services.AddControllersWithViews(); 
+            builder.Services.AddControllersWithViews();
+            //builder.Services.AddScoped<ApplicationDbContext>();
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            builder.Services.AddScoped<IDepartmentService, DepartmentService>();
             #endregion
 
             var app = builder.Build();
