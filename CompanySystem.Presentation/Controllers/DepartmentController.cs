@@ -78,5 +78,20 @@ namespace CompanySystem.Presentation.Controllers
                 return NotFound();
             return View(department);
         }
+
+        [HttpGet] //GET: /Department/Edit/id?
+        public IActionResult Edit(int? id)
+        {
+            if (id is null)
+                return BadRequest(); // 400
+
+            var department = _departmentService.GetDepartmentsById(id.Value);
+
+            if (department is null)
+                return NotFound(); // 404
+
+            return View(department);
+        }
+
     }
 }
