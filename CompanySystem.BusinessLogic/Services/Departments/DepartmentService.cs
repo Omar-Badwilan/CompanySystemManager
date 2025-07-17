@@ -5,18 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CompanySystem.BusinessLogic.Services.Departments
 {
-    public class DepartmentService : IDepartmentService 
+    public class DepartmentService(IDepartmentRepository departmentRepository) : IDepartmentService 
     {
-        private readonly IDepartmentRepository _departmentRepository;
+        private readonly IDepartmentRepository _departmentRepository = departmentRepository;
 
-        public DepartmentService(IDepartmentRepository departmentRepository)
+        public IEnumerable<DepartmentDto> GetAllDepartments()
         {
-            _departmentRepository = departmentRepository;
-        }
-
-        public IEnumerable<DepartmentToReturnDto> GetAllDepartments()
-        {
-            var departments = _departmentRepository.GetAllAsIQueryable().Select(department => new DepartmentToReturnDto
+            var departments = _departmentRepository.GetAllAsIQueryable().Select(department => new DepartmentDto
             {
                 Id = department.Id,
                 Name = department.Name,
@@ -27,12 +22,12 @@ namespace CompanySystem.BusinessLogic.Services.Departments
             return departments;
         }
 
-        public DepartmentDetailsToReturnDto? GetDepartmentsById(int id)
+        public DepartmentDetailsDto? GetDepartmentsById(int id)
         {
             var department = _departmentRepository.GetById(id);
 
             if (department is { })
-                return new DepartmentDetailsToReturnDto
+                return new DepartmentDetailsDto
                 {
                     Id = department.Id,
                     Name = department.Name,
@@ -70,6 +65,7 @@ namespace CompanySystem.BusinessLogic.Services.Departments
         {
             var department = new Department()
             {
+                Id = departmentDto.Id,
                 Name = departmentDto.Name,
                 Code = departmentDto.Code,
                 Description = departmentDto.Description,

@@ -32,7 +32,7 @@ namespace CompanySystem.DataAccessLayer.Persistence.Repositories
         }
         public int Update(Department department)
         {
-            _dbContext.Update(department);
+            _dbContext.Departments.Update(department);
             return _dbContext.SaveChanges();
         }
         public int Delete(Department department)
