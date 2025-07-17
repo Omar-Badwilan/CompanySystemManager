@@ -3,7 +3,7 @@
 
 namespace CompanySystem.BusinessLogic.DTOS.Departments
 {
-    public class DepartmentToReturnDto
+    public class DepartmentDto
     {
         public int Id { get; set; } // Pk
         public string Name { get; set; } = null!; // Department Name 
