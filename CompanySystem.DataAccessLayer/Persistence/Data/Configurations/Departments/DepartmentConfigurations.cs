@@ -1,6 +1,6 @@
 ﻿using CompanySystem.DataAccessLayer.Models.Departments;
 
-namespace CompanySystem.DataAccessLayer.Persistence.Data.Configurations
+namespace CompanySystem.DataAccessLayer.Persistence.Data.Configurations.Departments
 {
     class DepartmentConfigurations : IEntityTypeConfiguration<Department>
     {
