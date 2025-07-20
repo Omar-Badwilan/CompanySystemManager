@@ -27,7 +27,7 @@ namespace CompanySystem.DataAccessLayer.Persistence.Data.Configurations.Employee
                    (type) => type.ToString(),
                   (type) => (EmployeeType)Enum.Parse(typeof(EmployeeType), type)
                  );
-
+    
             builder.Property(E => E.CreatedOn).HasDefaultValueSql("GETDATE()");
 
         }

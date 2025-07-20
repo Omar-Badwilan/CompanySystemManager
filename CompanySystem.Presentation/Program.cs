@@ -1,6 +1,6 @@
 using CompanySystem.BusinessLogic.Services.Departments;
 using CompanySystem.DataAccessLayer.Persistence.Data.Contexts;
-using CompanySystem.DataAccessLayer.Persistence.Repositories;
+using CompanySystem.DataAccessLayer.Persistence.Repositories.Departments;
 using Microsoft.EntityFrameworkCore;
 
 namespace CompanySystem.Presentation

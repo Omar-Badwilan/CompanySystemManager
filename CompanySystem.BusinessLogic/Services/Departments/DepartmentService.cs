@@ -1,6 +1,6 @@
 ﻿using CompanySystem.BusinessLogic.DTOS.Departments;
 using CompanySystem.DataAccessLayer.Models.Departments;
-using CompanySystem.DataAccessLayer.Persistence.Repositories;
+using CompanySystem.DataAccessLayer.Persistence.Repositories.Departments;
 using Microsoft.EntityFrameworkCore;
 
 namespace CompanySystem.BusinessLogic.Services.Departments
