@@ -14,10 +14,10 @@ namespace CompanySystem.DataAccessLayer.Persistence.Repositories._Generic
 
         T? GetById(int id);
 
-        int Add(T T);
+        int Add(T entity);
 
-        int Update(T T);
+        int Update(T entity);
 
-        int Delete(T department);
+        int Delete(T entity);
     }
 }

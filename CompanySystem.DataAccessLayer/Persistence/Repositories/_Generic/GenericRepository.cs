@@ -12,9 +12,9 @@ namespace CompanySystem.DataAccessLayer.Persistence.Repositories._Generic
         public IEnumerable<T> GetAll(bool withAsNoTracking = true)
         {
             if (withAsNoTracking)
-                return _dbContext.Set<T>().AsNoTracking().ToList();
+                return _dbContext.Set<T>().Where(X => !X.IsDeleted).AsNoTracking().ToList();
 
-            return _dbContext.Set<T>().ToList();
+            return _dbContext.Set<T>().Where(X => !X.IsDeleted).ToList();
         }
 
         public IQueryable<T> GetAllAsIQueryable()
@@ -25,19 +25,20 @@ namespace CompanySystem.DataAccessLayer.Persistence.Repositories._Generic
         {
             return _dbContext.Set<T>().Find(id);
         }
-        public int Add(T T)
+        public int Add(T entity)
         {
-            _dbContext.Set<T>().Add(T);
+            _dbContext.Set<T>().Add(entity);
             return _dbContext.SaveChanges();
         }
-        public int Update(T T)
+        public int Update(T entity)
         {
-            _dbContext.Set<T>().Update(T);
+            _dbContext.Set<T>().Update(entity);
             return _dbContext.SaveChanges();
         }
-        public int Delete(T T)
+        public int Delete(T entity)
         {
-            _dbContext.Set<T>().Remove(T);
+            entity.IsDeleted = true;
+            _dbContext.Set<T>().Update(entity);
             return _dbContext.SaveChanges();
         }
     }

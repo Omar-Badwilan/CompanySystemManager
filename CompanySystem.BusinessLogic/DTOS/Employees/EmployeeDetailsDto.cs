@@ -1,10 +1,16 @@
 ﻿using CompanySystem.DataAccessLayer.Common.Enums;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace CompanySystem.DataAccessLayer.Models.Employees
+namespace CompanySystem.BusinessLogic.DTOS.Departments
 {
-    public class Employee : BaseEntity
+    public class EmployeeDetailsDto
     {
+        public int Id { get; set; }
         public string Name { get; set; } = null!;
 
         public int? Age { get; set; }
@@ -17,15 +23,19 @@ namespace CompanySystem.DataAccessLayer.Models.Employees
         [Display(Name = "Is Active")]
         public bool IsActive { get; set; } = true;
 
+        [DataType(DataType.EmailAddress)]
         public string? Email { get; set; }
 
+        [Display(Name = "Phone Number")]
+        [Phone]
         public string? PhoneNumber { get; set; }
 
+        [Display(Name = "Hiring Date")]
         public DateOnly HiringDate { get; set; }
 
-        public Gender Gender { get; set; }
+        public string Gender { get; set; } = null!;
 
-        public EmployeeType EmployeeType { get; set; }  
+        public string EmployeeType { get; set; } =null!;
 
     }
 }
