@@ -1,7 +1,7 @@
 ﻿using CompanySystem.DataAccessLayer.Common.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace CompanySystem.BusinessLogic.DTOS.Departments
+namespace CompanySystem.BusinessLogic.DTOS.Employees
 {
     public class CreatedEmployeeDto
     {

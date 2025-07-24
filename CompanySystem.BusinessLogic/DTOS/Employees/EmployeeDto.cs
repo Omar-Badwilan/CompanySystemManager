@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 
 
-namespace CompanySystem.BusinessLogic.DTOS.Departments
+namespace CompanySystem.BusinessLogic.DTOS.Employees
 {
     public class EmployeeDto
     {
