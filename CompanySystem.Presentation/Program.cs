@@ -1,6 +1,8 @@
 using CompanySystem.BusinessLogic.Services.Departments;
+using CompanySystem.BusinessLogic.Services.Employees;
 using CompanySystem.DataAccessLayer.Persistence.Data.Contexts;
 using CompanySystem.DataAccessLayer.Persistence.Repositories.Departments;
+using CompanySystem.DataAccessLayer.Persistence.Repositories.Employees;
 using Microsoft.EntityFrameworkCore;
 
 namespace CompanySystem.Presentation
@@ -22,7 +24,11 @@ namespace CompanySystem.Presentation
             });
 
             builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+
+
             builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+            builder.Services.AddScoped<IEmployeeService, EmployeeService>();
             #endregion
 
             var app = builder.Build();

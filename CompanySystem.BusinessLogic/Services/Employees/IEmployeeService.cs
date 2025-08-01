@@ -1,9 +1,4 @@
-﻿using CompanySystem.BusinessLogic.DTOS.Departments;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CompanySystem.BusinessLogic.DTOS.Employees;
 
 namespace CompanySystem.BusinessLogic.Services.Employees
 {

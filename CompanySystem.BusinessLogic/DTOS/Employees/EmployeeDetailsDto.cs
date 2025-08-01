@@ -37,5 +37,12 @@ namespace CompanySystem.BusinessLogic.DTOS.Employees
 
         public string EmployeeType { get; set; } =null!;
 
+        #region Adminstrator
+        public int CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public int LastModifiedBy { get; set; }
+        public DateTime LastModifiedOn { get; set; }
+        #endregion
+
     }
 }

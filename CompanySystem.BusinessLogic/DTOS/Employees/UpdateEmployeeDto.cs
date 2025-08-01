@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CompanySystem.BusinessLogic.DTOS.Employees
 {
-    public class UpdateEmployeeDto
+    public class    UpdateEmployeeDto
     {
         public int Id { get; set; }
         [Required]

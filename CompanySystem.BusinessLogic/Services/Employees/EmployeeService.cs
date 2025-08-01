@@ -1,13 +1,7 @@
-﻿using CompanySystem.BusinessLogic.DTOS.Departments;
-using CompanySystem.DataAccessLayer.Common.Enums;
+﻿using CompanySystem.BusinessLogic.DTOS.Employees;
 using CompanySystem.DataAccessLayer.Models.Employees;
 using CompanySystem.DataAccessLayer.Persistence.Repositories.Employees;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace CompanySystem.BusinessLogic.Services.Employees
 {
@@ -26,8 +20,8 @@ namespace CompanySystem.BusinessLogic.Services.Employees
                 IsActive = employee.IsActive,
                 Salary = employee.Salary,
                 Email = employee.Email,
-                Gender = nameof(employee.Gender),
-                EmployeeType = nameof(employee.EmployeeType),
+                Gender = employee.Gender.ToString() ,
+                EmployeeType = employee.EmployeeType.ToString(),
             });
         }
         public EmployeeDetailsDto? GetEmployeesById(int id)
@@ -109,7 +103,5 @@ namespace CompanySystem.BusinessLogic.Services.Employees
             return false;
 
         }
-
-
     }
 }

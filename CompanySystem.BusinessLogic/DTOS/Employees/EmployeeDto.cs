@@ -12,18 +12,27 @@ namespace CompanySystem.BusinessLogic.DTOS.Employees
 
         public int? Age { get; set; }
 
+        public string? Address { get; set; }
+
         [DataType(DataType.Currency)]
         public decimal Salary { get; set; }
 
-        [Display(Name = "Is Active")]   
+        [Display(Name = "Is Active")]
         public bool IsActive { get; set; } = true;
 
         [DataType(DataType.EmailAddress)]
         public string? Email { get; set; }
 
-        public string? Gender { get; set; }
+        [Display(Name = "Phone Number")]
+        [Phone]
+        public string? PhoneNumber { get; set; }
 
-        public string? EmployeeType { get; set; }
+        [Display(Name = "Hiring Date")]
+        public DateOnly HiringDate { get; set; }
+
+        public string Gender { get; set; } = null!;
+
+        public string EmployeeType { get; set; } = null!;
 
 
     }
