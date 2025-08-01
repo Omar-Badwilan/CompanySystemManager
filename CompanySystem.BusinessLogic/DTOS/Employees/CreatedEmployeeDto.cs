@@ -33,6 +33,8 @@ namespace CompanySystem.BusinessLogic.DTOS.Employees
 
         public Gender Gender { get; set; }
 
+
+        [Display(Name = "Employee Type")]
         public EmployeeType EmployeeType { get; set; }
 
     }
