@@ -40,8 +40,8 @@ namespace CompanySystem.BusinessLogic.Services.Employees
                     Email = employee.Email,
                     PhoneNumber = employee.PhoneNumber,
                     HiringDate = employee.HiringDate,
-                    Gender = nameof(employee.Gender),
-                    EmployeeType = nameof(employee.EmployeeType),
+                    Gender = employee.Gender,
+                    EmployeeType = employee.EmployeeType,
                 };
 
             return null;

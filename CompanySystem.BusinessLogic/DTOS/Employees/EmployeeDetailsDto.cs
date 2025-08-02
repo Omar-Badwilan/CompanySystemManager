@@ -33,9 +33,9 @@ namespace CompanySystem.BusinessLogic.DTOS.Employees
         [Display(Name = "Hiring Date")]
         public DateOnly HiringDate { get; set; }
 
-        public string Gender { get; set; } = null!;
+        public Gender Gender { get; set; } 
 
-        public string EmployeeType { get; set; } =null!;
+        public EmployeeType EmployeeType { get; set; }
 
         #region Adminstrator
         public int CreatedBy { get; set; }
