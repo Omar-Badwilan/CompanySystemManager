@@ -162,19 +162,6 @@ namespace CompanySystem.Presentation.Controllers
         #endregion
 
         #region Delete
-        [HttpGet]
-        public IActionResult Delete(int? id)
-        {
-            if (id is null)
-                return BadRequest();
-            var employee = _employeeService.GetEmployeesById(id.Value);
-
-            if (employee is null)
-                return NotFound();
-
-            return View(employee);
-        }
-
         [HttpPost]
         public IActionResult Delete(int id)
         {
