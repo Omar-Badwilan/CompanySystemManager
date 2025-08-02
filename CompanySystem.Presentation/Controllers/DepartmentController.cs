@@ -7,17 +7,22 @@ namespace CompanySystem.Presentation.Controllers
 {
     public class DepartmentController(IDepartmentService departmentService, ILogger<DepartmentController> logger, IWebHostEnvironment environment) : Controller
     {
+        #region Services
         private readonly IDepartmentService _departmentService = departmentService;
         private readonly ILogger<DepartmentController> _logger = logger;
         private readonly IWebHostEnvironment _environment = environment;
+        #endregion
 
+        #region Index
         [HttpGet]//GET: /Department/Index   
         public IActionResult Index()
         {
             var departments = _departmentService.GetAllDepartments();
             return View(departments);
         }
+        #endregion
 
+        #region Details
         [HttpGet] //GET: /Department/Details
         public IActionResult Details(int? id)
         {
@@ -29,7 +34,9 @@ namespace CompanySystem.Presentation.Controllers
                 return NotFound();
             return View(department);
         }
+        #endregion
 
+        #region Create
         [HttpGet] //GET: /Department/Create
         public IActionResult Create()
         {
@@ -68,7 +75,9 @@ namespace CompanySystem.Presentation.Controllers
             return View(departmentdto);
 
         }
+        #endregion
 
+        #region Update
         [HttpGet] //GET: /Department/Edit/id?
         public IActionResult Edit(int? id)
         {
@@ -90,10 +99,10 @@ namespace CompanySystem.Presentation.Controllers
         }
 
         [HttpPost] //Post: /Department/Edit
-        public IActionResult Edit([FromRoute] int id,DepartmentEditViewModel departmentVM)
+        public IActionResult Edit([FromRoute] int id, DepartmentEditViewModel departmentVM)
         {
             if (!ModelState.IsValid) //server side validation
-                return View(departmentVM); 
+                return View(departmentVM);
 
             var message = string.Empty;
             try
@@ -126,6 +135,49 @@ namespace CompanySystem.Presentation.Controllers
             ModelState.AddModelError(string.Empty, message);
             return View(departmentVM);
         }
+        #endregion
+
+        #region Delete
+        [HttpGet] //GET: /Department/Delete/id?
+        public IActionResult Delete(int? id)
+        {
+            if (id is null)
+                return BadRequest();
+            var department = _departmentService.GetDepartmentsById(id.Value);
+
+            if (department is null)
+                return NotFound();
+
+            return View(department);
+        }
+
+        [HttpPost] //Post 
+        public IActionResult Delete(int id)
+        {
+            var message = string.Empty;
+
+            try
+            {
+                var deleted = _departmentService.DeleteDepartment(id);
+                if (deleted)
+                    return RedirectToAction(nameof(Index));
+
+                message = "Department couldn't be deleted";
+            }
+            catch (Exception ex)
+            {
+                //1. Log Exception
+                _logger.LogError(ex, ex.Message);
+
+                //2. Set Message
+                message = _environment.IsDevelopment() ? ex.Message : "Department couldn't be deleted";
+
+            }
+
+            ModelState.AddModelError(string.Empty, message);
+            return View();
+        } 
+        #endregion
 
     }
 }
