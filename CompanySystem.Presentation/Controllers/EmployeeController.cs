@@ -1,6 +1,7 @@
 ﻿using CompanySystem.BusinessLogic.DTOS.Employees;
 using CompanySystem.BusinessLogic.Services.Employees;
 using CompanySystem.DataAccessLayer.Models.Departments;
+using CompanySystem.Presentation.ViewModels.Employees;
 using Microsoft.AspNetCore.Mvc;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -87,7 +88,7 @@ namespace CompanySystem.Presentation.Controllers
 
         #endregion
 
-      /*  #region Update
+        #region Update
 
         [HttpGet]
         public IActionResult Edit(int? id)
@@ -97,25 +98,30 @@ namespace CompanySystem.Presentation.Controllers
 
             var employee = _employeeService.GetEmployeesById(id.Value);
 
-            if(employee is null)
+            if (employee is null)
                 return NotFound();
             return View(new EmployeeEditViewModel()
             {
-                Code = employee.Code,
-                Name = employee.Name,
-                Description = employee.Description,
-                CreationDate = employee.CreationDate
+               Name = employee.Name,
+               Address = employee.Address,
+               Email = employee.Email,
+               Age = employee.Age,
+               Salary = employee.Salary,
+               PhoneNumber = employee.PhoneNumber,
+               IsActive = employee.IsActive,
+               EmployeeType = employee.EmployeeType,
+               Gender = employee.Gender,
+               HiringDate = employee.HiringDate,
             });
         }
 
         [HttpPost]
-        public IActionResult Edit([FromRoute] int id , EmployeeEditViewModel employeeVM)
+        public IActionResult Edit([FromRoute] int id, EmployeeEditViewModel employeeVM)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return View(employeeVM);
 
             var message = string.Empty;
-
             try
             {
                 var employeeToUpdate = new UpdateEmployeeDto()
@@ -132,7 +138,7 @@ namespace CompanySystem.Presentation.Controllers
                     Gender = employeeVM.Gender,
                     EmployeeType = employeeVM.EmployeeType,
                 };
-                var updated = _employeeService.UpdateEmployee(employeeToUpdate) ;
+                var updated = _employeeService.UpdateEmployee(employeeToUpdate);
 
                 if (updated > 0)
                     return RedirectToAction(nameof(Index));
@@ -153,7 +159,7 @@ namespace CompanySystem.Presentation.Controllers
         }
 
 
-        #endregion*/
+        #endregion
 
         #region Delete
         [HttpGet]
