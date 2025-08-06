@@ -1,6 +1,7 @@
 ﻿using CompanySystem.BusinessLogic.DTOS.Departments;
 using CompanySystem.BusinessLogic.Services.Departments;
 using CompanySystem.Presentation.ViewModels.Departments;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CompanySystem.Presentation.Controllers
@@ -45,6 +46,7 @@ namespace CompanySystem.Presentation.Controllers
 
         //when do create button
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(CreatedDepartmentDto departmentdto)
         {
             if (!ModelState.IsValid)
@@ -99,6 +101,8 @@ namespace CompanySystem.Presentation.Controllers
         }
 
         [HttpPost] //Post: /Department/Edit
+        [ValidateAntiForgeryToken]
+
         public IActionResult Edit([FromRoute] int id, DepartmentEditViewModel departmentVM)
         {
             if (!ModelState.IsValid) //server side validation
@@ -152,6 +156,8 @@ namespace CompanySystem.Presentation.Controllers
         }
 
         [HttpPost] //Post 
+        [ValidateAntiForgeryToken]
+
         public IActionResult Delete(int id)
         {
             var message = string.Empty;

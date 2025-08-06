@@ -10,7 +10,8 @@ namespace CompanySystem.DataAccessLayer.Persistence.Repositories._Generic
     public interface IGenericRepository <T> where T: BaseEntity
     {
         IEnumerable<T> GetAll(bool withAsNoTracking = true);
-        IQueryable<T> GetAllAsIQueryable();
+        IQueryable<T> GetIQueryable();
+        IEnumerable<T> GetIEnumerable();
 
         T? GetById(int id);
 

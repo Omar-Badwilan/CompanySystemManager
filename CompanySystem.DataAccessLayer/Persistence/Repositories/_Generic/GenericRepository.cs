@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CompanySystem.DataAccessLayer.Persistence.Repositories._Generic
 {
-    public class GenericRepository<T>(ApplicationDbContext dbContext) where T : BaseEntity
+    public class GenericRepository<T>(ApplicationDbContext dbContext) : IGenericRepository<T> where T : BaseEntity
     {
         private protected readonly ApplicationDbContext _dbContext = dbContext;
 
@@ -17,14 +17,24 @@ namespace CompanySystem.DataAccessLayer.Persistence.Repositories._Generic
             return _dbContext.Set<T>().Where(X => !X.IsDeleted).ToList();
         }
 
-        public IQueryable<T> GetAllAsIQueryable()
+        public IQueryable<T> GetIQueryable()
         {
             return _dbContext.Set<T>();
         }
+
+        public IEnumerable<T> GetIEnumerable()
+        {
+            return _dbContext.Set<T>();
+        }
+
+
         public T? GetById(int id)
         {
             return _dbContext.Set<T>().Find(id);
         }
+
+
+
         public int Add(T entity)
         {
             _dbContext.Set<T>().Add(entity);
@@ -41,5 +51,7 @@ namespace CompanySystem.DataAccessLayer.Persistence.Repositories._Generic
             _dbContext.Set<T>().Update(entity);
             return _dbContext.SaveChanges();
         }
+
+
     }
 }

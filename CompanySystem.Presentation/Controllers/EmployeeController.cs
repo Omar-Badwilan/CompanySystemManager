@@ -52,6 +52,8 @@ namespace CompanySystem.Presentation.Controllers
 
         //after Create button
         [HttpPost]
+        [ValidateAntiForgeryToken]
+
         public IActionResult Create(CreatedEmployeeDto employeeDto)
         {
             if (!ModelState.IsValid)
@@ -116,6 +118,8 @@ namespace CompanySystem.Presentation.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+
         public IActionResult Edit([FromRoute] int id, EmployeeEditViewModel employeeVM)
         {
             if (!ModelState.IsValid)
@@ -163,6 +167,8 @@ namespace CompanySystem.Presentation.Controllers
 
         #region Delete
         [HttpPost]
+        [ValidateAntiForgeryToken]
+
         public IActionResult Delete(int id)
         {
             var message = string.Empty;

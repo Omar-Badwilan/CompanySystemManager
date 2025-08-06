@@ -13,7 +13,7 @@ namespace CompanySystem.BusinessLogic.Services.Employees
         public IEnumerable<EmployeeDto> GetAllEmployees()
         {
             var employees = _employeeRepository
-                .GetAllAsIQueryable().
+                .GetIQueryable().
                 Where(E => !E.IsDeleted).
                 Select(employee => new EmployeeDto()
             {
