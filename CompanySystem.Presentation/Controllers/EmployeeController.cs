@@ -54,23 +54,36 @@ namespace CompanySystem.Presentation.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
 
-        public IActionResult Create(CreatedEmployeeDto employeeDto)
+        public IActionResult Create(EmployeeViewModel employeeVM)
         {
             if (!ModelState.IsValid)
-                return View(employeeDto);
+                return View(employeeVM);
 
             var message = string.Empty;
 
             try
             {
-                var result = _employeeService.CreateEmployee(employeeDto);
+                var createEmployee = new CreatedEmployeeDto()
+                {
+                    Name = employeeVM.Name,
+                    Age = employeeVM.Age,
+                    Address = employeeVM.Address,
+                    Salary = employeeVM.Salary,
+                    IsActive = employeeVM.IsActive,
+                    Email = employeeVM.Email,
+                    PhoneNumber = employeeVM.PhoneNumber,
+                    HiringDate = employeeVM.HiringDate,
+                    Gender = employeeVM.Gender,
+                    EmployeeType = employeeVM.EmployeeType,
+                };
+                var result = _employeeService.CreateEmployee(createEmployee);
                 //if created then >0
                 if (result > 0)
                     return RedirectToAction("Index");
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Employee isn't created");
-                    return View(employeeDto);
+                    return View(employeeVM);
                 }
             }
             catch (Exception ex)
@@ -82,7 +95,7 @@ namespace CompanySystem.Presentation.Controllers
                 message = _environment.IsDevelopment() ? ex.Message : "Employee isn't created";
             }
             ModelState.AddModelError(string.Empty, message);
-            return View(employeeDto);
+            return View(employeeVM);
 
         }
 
@@ -102,7 +115,7 @@ namespace CompanySystem.Presentation.Controllers
 
             if (employee is null)
                 return NotFound();
-            return View(new EmployeeEditViewModel()
+            return View(new EmployeeViewModel()
             {
                Name = employee.Name,
                Address = employee.Address,
@@ -120,7 +133,7 @@ namespace CompanySystem.Presentation.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
 
-        public IActionResult Edit([FromRoute] int id, EmployeeEditViewModel employeeVM)
+        public IActionResult Edit([FromRoute] int id, EmployeeViewModel employeeVM)
         {
             if (!ModelState.IsValid)
                 return View(employeeVM);

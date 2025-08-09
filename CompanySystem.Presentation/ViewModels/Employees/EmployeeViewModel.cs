@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CompanySystem.Presentation.ViewModels.Employees
 {
-    public class EmployeeEditViewModel
+    public class EmployeeViewModel
     {
         [Required]
         [MaxLength(50, ErrorMessage = "Max Length of Name is 50 chars")]

@@ -23,10 +23,11 @@
     </div>
 
     <div class="mt-4">
-        <input type="submit" value="Create" class="btn btn-primary" />
-        <a asp-action="Index" class="btn btn-light">Back To </a>
+        <input type="submit"
+               value="@(ViewBag.Action == "Edit" ? "Update" : "Create")"
+               class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-light">Back To</a>
     </div>
-
 
 
 </form>

@@ -10,14 +10,22 @@
     </a>
 </td>
 <td>
-
-    <!-- Delete View -->
-    <a  asp-action="Delete" asp-route-id="@Model" class="btn btn-danger"> 
+    <!--Employee modal and Department view at delete-->
+    @if (ViewContext.RouteData.Values["controller"]?.ToString() == "Employee")
+    {
+        <!-- Delete Button trigger modal -->
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
         <i class="fas fa-trash"></i>Delete
-     </a>
+        </button>
+    }
+    else
+    {
+        <!-- Delete View -->
+        <a asp-action="Delete" asp-route-id="@Model" class="btn btn-danger">
+            <i class="fas fa-trash"></i>Delete
+        </a>
+    }
 
-    <!-- Delete Button trigger modal -->
-    @* <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-        <i class="fas fa-trash"></i>Delete
-    </button> *@
+
+
 </td>
