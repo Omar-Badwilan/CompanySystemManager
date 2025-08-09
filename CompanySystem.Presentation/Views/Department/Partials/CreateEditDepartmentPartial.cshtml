@@ -1,0 +1,32 @@
+﻿@model DepartmentViewModel
+
+<form asp-action="@ViewBag.Action" class="col-6">
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <div class="form-group mb-3">
+        <label class="form-label" asp-for="Code"></label>
+        <input asp-for="Code" class="form-control" />
+        <span asp-validation-for="Code" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label" asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label" asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control"> </textarea>
+    </div>
+    <div class="form-group mb-3">
+        <label class="form-label" asp-for="CreationDate"></label>
+        <input type="date" asp-for="CreationDate" class="form-control" />
+    </div>
+
+    <div class="mt-4">
+        <input type="submit" value="Create" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-light">Back To </a>
+    </div>
+
+
+
+</form>

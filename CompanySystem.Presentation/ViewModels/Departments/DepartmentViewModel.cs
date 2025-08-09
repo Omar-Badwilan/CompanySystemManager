@@ -2,7 +2,7 @@
 
 namespace CompanySystem.Presentation.ViewModels.Departments
 {
-    public class DepartmentEditViewModel
+    public class DepartmentViewModel
     {
         [Required(ErrorMessage = "Code is Required !")]
         public string Name { get; set; } = null!; // Department Name 

@@ -47,22 +47,31 @@ namespace CompanySystem.Presentation.Controllers
         //when do create button
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CreatedDepartmentDto departmentdto)
+        public IActionResult Create(DepartmentViewModel departmentVM)
         {
             if (!ModelState.IsValid)
-                return View(departmentdto); // if there is error it returns the same view with the model state errors
+                return View(departmentVM); // if there is error it returns the same view with the model state errors
 
             var message = string.Empty;
             try
             {
-                var result = _departmentService.CreateDepartment(departmentdto);
+                var createdDepartment = new CreatedDepartmentDto()
+                {
+                    Code = departmentVM.Code,
+                    Name = departmentVM.Name,
+                    Description = departmentVM.Description,
+                    CreationDate = departmentVM.CreationDate
+
+                };
+
+                var result = _departmentService.CreateDepartment(createdDepartment);
 
                 if (result > 0)
                     return RedirectToAction("Index");
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Department isn't Created");
-                    return View(departmentdto);
+                    return View(createdDepartment);
                 }
             }
             catch (Exception ex)
@@ -74,7 +83,7 @@ namespace CompanySystem.Presentation.Controllers
                 message = _environment.IsDevelopment() ? ex.Message : "Department isn't Created";
             }
             ModelState.AddModelError(string.Empty, message);
-            return View(departmentdto);
+            return View(departmentVM);
 
         }
         #endregion
@@ -91,7 +100,7 @@ namespace CompanySystem.Presentation.Controllers
             if (department is null)
                 return NotFound(); // 404
 
-            return View(new DepartmentEditViewModel()
+            return View(new DepartmentViewModel()
             {
                 Code = department.Code,
                 Name = department.Name,
@@ -103,7 +112,7 @@ namespace CompanySystem.Presentation.Controllers
         [HttpPost] //Post: /Department/Edit
         [ValidateAntiForgeryToken]
 
-        public IActionResult Edit([FromRoute] int id, DepartmentEditViewModel departmentVM)
+        public IActionResult Edit([FromRoute] int id, DepartmentViewModel departmentVM)
         {
             if (!ModelState.IsValid) //server side validation
                 return View(departmentVM);
