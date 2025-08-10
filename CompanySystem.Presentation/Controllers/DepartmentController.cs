@@ -67,11 +67,12 @@ namespace CompanySystem.Presentation.Controllers
                 var created = _departmentService.CreateDepartment(createdDepartment) > 0;
 
                 if (created)
+                {
                     TempData["Message"] = "Department is Created";
-                else
-                    TempData["Message"] = "Department isn't Created";
+                    return RedirectToAction(nameof(Index));
+                }
+                ModelState.AddModelError(string.Empty, "Department couldn't be created");
 
-                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
@@ -79,9 +80,9 @@ namespace CompanySystem.Presentation.Controllers
                 _logger.LogError(ex, ex.Message);
 
                 //2. Set Message
-                message = _environment.IsDevelopment() ? ex.Message : "Department isn't Created";
+                message = _environment.IsDevelopment() ? ex.Message : "Department couldn't be Created";
+                ModelState.AddModelError(string.Empty, message);
             }
-            ModelState.AddModelError(string.Empty, message);
             return View(departmentVM);
 
         }
@@ -138,7 +139,6 @@ namespace CompanySystem.Presentation.Controllers
                 }
                 else
                     message = "Department couldn't be updated";
-
                 
             }
             catch (Exception ex)
@@ -148,8 +148,8 @@ namespace CompanySystem.Presentation.Controllers
 
                 //2. Set Message
                 message = _environment.IsDevelopment() ? ex.Message : "Department couldn't be updated";
+                ModelState.AddModelError(string.Empty, message);
             }
-            ModelState.AddModelError(string.Empty, message);
             return View(departmentVM);
         }
         #endregion
@@ -185,7 +185,6 @@ namespace CompanySystem.Presentation.Controllers
 
                 }
                 message = "Department couldn't be Deleted";
-
             }
             catch (Exception ex)
             {
@@ -194,10 +193,8 @@ namespace CompanySystem.Presentation.Controllers
 
                 //2. Set Message
                 message = _environment.IsDevelopment() ? ex.Message : "Department couldn't be deleted";
-
+                ModelState.AddModelError(string.Empty, message);
             }
-
-            ModelState.AddModelError(string.Empty, message);
             return View();
         } 
         #endregion

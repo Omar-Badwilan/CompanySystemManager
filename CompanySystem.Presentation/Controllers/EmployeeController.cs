@@ -2,6 +2,7 @@
 using CompanySystem.BusinessLogic.Services.Employees;
 using CompanySystem.DataAccessLayer.Models.Departments;
 using CompanySystem.Presentation.ViewModels.Employees;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -58,12 +59,10 @@ namespace CompanySystem.Presentation.Controllers
         {
             if (!ModelState.IsValid)
                 return View(employeeVM);
-
             var message = string.Empty;
-
             try
             {
-                var createEmployee = new CreatedEmployeeDto()
+                var createdEmployee = new CreatedEmployeeDto()
                 {
                     Name = employeeVM.Name,
                     Age = employeeVM.Age,
@@ -76,31 +75,25 @@ namespace CompanySystem.Presentation.Controllers
                     Gender = employeeVM.Gender,
                     EmployeeType = employeeVM.EmployeeType,
                 };
-                var result = _employeeService.CreateEmployee(createEmployee);
-                //if created then >0
-                if (result > 0)
-                    return RedirectToAction("Index");
-                else
+                var created = _employeeService.CreateEmployee(createdEmployee) > 0;
+
+                if (created)
                 {
-                    ModelState.AddModelError(string.Empty, "Employee isn't created");
-                    return View(employeeVM);
+                    TempData["Message"] = "Employee is created successfully!";
+                    return RedirectToAction("Index");
                 }
+                ModelState.AddModelError(string.Empty, "Employee isn't created");
             }
             catch (Exception ex)
             {
                 //1. Log Exception
                 _logger.LogError(ex,ex.Message);
-
                 //2. Set Message
                 message = _environment.IsDevelopment() ? ex.Message : "Employee isn't created";
+                ModelState.AddModelError(string.Empty, message);
             }
-            ModelState.AddModelError(string.Empty, message);
             return View(employeeVM);
-
         }
-
-
-
         #endregion
 
         #region Update
@@ -155,12 +148,14 @@ namespace CompanySystem.Presentation.Controllers
                     Gender = employeeVM.Gender,
                     EmployeeType = employeeVM.EmployeeType,
                 };
-                var updated = _employeeService.UpdateEmployee(employeeToUpdate);
+                var updated = _employeeService.UpdateEmployee(employeeToUpdate) > 0;
 
-                if (updated > 0)
+                if (updated )
+                {
+                    TempData["Message"] = "Employee is created successfully!";
                     return RedirectToAction(nameof(Index));
-
-                message = "Employee couldn't be updated";
+                }
+                ModelState.AddModelError(string.Empty, "Employee couldn't be created");
 
             }
             catch (Exception ex)
@@ -170,8 +165,8 @@ namespace CompanySystem.Presentation.Controllers
 
                 //2. Set
                 message = _environment.IsDevelopment() ? ex.Message : "Employee couldn't be updated";
+                ModelState.AddModelError(string.Empty, message);
             }
-            ModelState.AddModelError(string.Empty, message);
             return View(employeeVM);
         }
 
@@ -190,9 +185,11 @@ namespace CompanySystem.Presentation.Controllers
             {
                 var deleted = _employeeService.DeleteEmployee(id);
                 if (deleted)
+                {
+                    TempData["Message"] = "Employee is deleted successfully!";
                     return RedirectToAction(nameof(Index));
-
-                message = "Employee couldn't be deleted";
+                }
+                ModelState.AddModelError(string.Empty, "Employee couldn't be created");
             }
             catch (Exception ex)
             {
@@ -201,8 +198,8 @@ namespace CompanySystem.Presentation.Controllers
 
                 //2. Set Message
                 message = _environment.IsDevelopment() ? ex.Message : "Employee couldn't be deleted";
+                ModelState.AddModelError(string.Empty, message);
             }
-            ModelState.AddModelError(string.Empty, message);
             return View();
         }
         #endregion
