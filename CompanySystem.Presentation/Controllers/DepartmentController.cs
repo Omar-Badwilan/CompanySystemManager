@@ -64,15 +64,14 @@ namespace CompanySystem.Presentation.Controllers
 
                 };
 
-                var result = _departmentService.CreateDepartment(createdDepartment);
+                var created = _departmentService.CreateDepartment(createdDepartment) > 0;
 
-                if (result > 0)
-                    return RedirectToAction("Index");
+                if (created)
+                    TempData["Message"] = "Department is Created";
                 else
-                {
-                    ModelState.AddModelError(string.Empty, "Department isn't Created");
-                    return View(createdDepartment);
-                }
+                    TempData["Message"] = "Department isn't Created";
+
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
@@ -133,9 +132,14 @@ namespace CompanySystem.Presentation.Controllers
                 var updated = _departmentService.UpdateDepartment(departmentToUpdate) > 0;
 
                 if (updated)
+                {
+                    TempData["Message"] = "Department is Updated";
                     return RedirectToAction(nameof(Index));
+                }
+                else
+                    message = "Department couldn't be updated";
 
-                message = "Department couldn't be updated";
+                
             }
             catch (Exception ex)
             {
@@ -175,9 +179,13 @@ namespace CompanySystem.Presentation.Controllers
             {
                 var deleted = _departmentService.DeleteDepartment(id);
                 if (deleted)
+                {
+                    TempData["Message"] = "Department is Deleted";
                     return RedirectToAction(nameof(Index));
 
-                message = "Department couldn't be deleted";
+                }
+                message = "Department couldn't be Deleted";
+
             }
             catch (Exception ex)
             {
