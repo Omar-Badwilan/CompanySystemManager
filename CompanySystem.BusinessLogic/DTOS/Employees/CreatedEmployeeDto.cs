@@ -37,5 +37,7 @@ namespace CompanySystem.BusinessLogic.DTOS.Employees
         [Display(Name = "Employee Type")]
         public EmployeeType EmployeeType { get; set; }
 
+        public int? DepartmentId { get; set; }
+
     }
 }

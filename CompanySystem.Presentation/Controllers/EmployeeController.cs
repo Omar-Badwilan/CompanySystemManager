@@ -1,6 +1,8 @@
 ﻿using CompanySystem.BusinessLogic.DTOS.Employees;
+using CompanySystem.BusinessLogic.Services.Departments;
 using CompanySystem.BusinessLogic.Services.Employees;
 using CompanySystem.DataAccessLayer.Models.Departments;
+using CompanySystem.DataAccessLayer.Models.Employees;
 using CompanySystem.Presentation.ViewModels.Employees;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +10,9 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace CompanySystem.Presentation.Controllers
 {
-    public class EmployeeController(IEmployeeService employeeService, ILogger<EmployeeController> logger, IWebHostEnvironment environment) : Controller
+    public class EmployeeController(IEmployeeService employeeService,
+        ILogger<EmployeeController> logger, 
+        IWebHostEnvironment environment) : Controller
     {
         #region Services
         private readonly IEmployeeService _employeeService = employeeService;
@@ -74,6 +78,7 @@ namespace CompanySystem.Presentation.Controllers
                     HiringDate = employeeVM.HiringDate,
                     Gender = employeeVM.Gender,
                     EmployeeType = employeeVM.EmployeeType,
+                    DepartmentId = employeeVM.DepartmentId,
                 };
                 var created = _employeeService.CreateEmployee(createdEmployee) > 0;
 
@@ -120,13 +125,14 @@ namespace CompanySystem.Presentation.Controllers
                EmployeeType = employee.EmployeeType,
                Gender = employee.Gender,
                HiringDate = employee.HiringDate,
+               DepartmentId = employee.DepartmentId,
             });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
 
-        public IActionResult Edit([FromRoute] int id, EmployeeViewModel employeeVM)
+        public IActionResult Edit([FromRoute] int id, EmployeeViewModel employeeVM)     
         {
             if (!ModelState.IsValid)
                 return View(employeeVM);
@@ -147,15 +153,16 @@ namespace CompanySystem.Presentation.Controllers
                     HiringDate = employeeVM.HiringDate,
                     Gender = employeeVM.Gender,
                     EmployeeType = employeeVM.EmployeeType,
+                    DepartmentId = employeeVM.DepartmentId,
                 };
                 var updated = _employeeService.UpdateEmployee(employeeToUpdate) > 0;
 
                 if (updated )
                 {
-                    TempData["Message"] = "Employee is created successfully!";
+                    TempData["Message"] = "Employee is updated successfully!";
                     return RedirectToAction(nameof(Index));
                 }
-                ModelState.AddModelError(string.Empty, "Employee couldn't be created");
+                ModelState.AddModelError(string.Empty, "Employee couldn't be updated");
 
             }
             catch (Exception ex)

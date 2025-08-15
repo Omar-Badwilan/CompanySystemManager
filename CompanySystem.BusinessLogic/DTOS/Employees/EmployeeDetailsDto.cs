@@ -1,4 +1,4 @@
-﻿using CompanySystem.DataAccessLayer.Common.Enums;
+﻿ using CompanySystem.DataAccessLayer.Common.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -43,6 +43,8 @@ namespace CompanySystem.BusinessLogic.DTOS.Employees
         public int LastModifiedBy { get; set; }
         public DateTime LastModifiedOn { get; set; }
         #endregion
+
+        public int? DepartmentId { get; set; }
 
     }
 }

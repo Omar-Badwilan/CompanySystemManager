@@ -1,4 +1,5 @@
 ﻿using CompanySystem.DataAccessLayer.Common.Enums;
+using CompanySystem.DataAccessLayer.Models.Departments;
 using System.ComponentModel.DataAnnotations;
 
 namespace CompanySystem.DataAccessLayer.Models.Employees
@@ -25,7 +26,13 @@ namespace CompanySystem.DataAccessLayer.Models.Employees
 
         public Gender Gender { get; set; }
 
-        public EmployeeType EmployeeType { get; set; }  
+        public EmployeeType EmployeeType { get; set; }
+
+
+        public int? DepartmentId { get; set; }
+
+        //Navigational property (OtO)
+        public virtual Department? Department { get; set; }
 
     }
 }

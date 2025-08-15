@@ -1,6 +1,7 @@
 ﻿using CompanySystem.BusinessLogic.DTOS.Employees;
 using CompanySystem.DataAccessLayer.Models.Employees;
 using CompanySystem.DataAccessLayer.Persistence.Repositories.Employees;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace CompanySystem.BusinessLogic.Services.Employees
@@ -13,10 +14,11 @@ namespace CompanySystem.BusinessLogic.Services.Employees
         public IEnumerable<EmployeeDto> GetAllEmployees()
         {
             var employees = _employeeRepository
-                .GetIQueryable().
-                Where(E => !E.IsDeleted).
-                Select(employee => new EmployeeDto()
-            {
+                .GetIQueryable()
+                .Where(E => !E.IsDeleted)
+                .Include(E => E.Department)
+                .Select(employee => new EmployeeDto()
+                {
                 Id = employee.Id,
                 Name = employee.Name,
                 Age = employee.Age,
@@ -25,7 +27,8 @@ namespace CompanySystem.BusinessLogic.Services.Employees
                 Email = employee.Email,
                 Gender = employee.Gender.ToString(),
                 EmployeeType = employee.EmployeeType.ToString(),
-            }).ToList();
+                Department = employee.Department != null ? employee.Department.Name : "No Department"
+                }).ToList();
 
             return employees;
         }
@@ -47,6 +50,7 @@ namespace CompanySystem.BusinessLogic.Services.Employees
                     HiringDate = employee.HiringDate,
                     Gender = employee.Gender,
                     EmployeeType = employee.EmployeeType,
+                    DepartmentId = employee.DepartmentId,
                 };
 
             return null;
@@ -68,6 +72,7 @@ namespace CompanySystem.BusinessLogic.Services.Employees
                 HiringDate = employeeDto.HiringDate,
                 Gender = employeeDto.Gender,
                 EmployeeType = employeeDto.EmployeeType,
+                DepartmentId = employeeDto.DepartmentId,
                 CreatedBy = 1,
                 LastModifiedBy = 1,
                 LastModifiedOn = DateTime.UtcNow,
@@ -91,6 +96,7 @@ namespace CompanySystem.BusinessLogic.Services.Employees
                 HiringDate = employeeDto.HiringDate,
                 Gender = employeeDto.Gender,
                 EmployeeType = employeeDto.EmployeeType,
+                DepartmentId = employeeDto.DepartmentId,
                 CreatedBy = 1,
                 LastModifiedBy = 1,
                 LastModifiedOn = DateTime.UtcNow,

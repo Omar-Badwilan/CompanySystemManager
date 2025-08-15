@@ -1,4 +1,13 @@
 ﻿@model EmployeeViewModel
+@inject IDepartmentService departmentService
+
+@{
+    var Departments = new SelectList(departmentService.GetAllDepartments(), nameof(DepartmentDto.Id)
+    ,nameof(DepartmentDto.Name));
+}
+
+ 
+
 <form asp-action="@ViewBag.Action" class="row col-6">
 
     <div asp-validation-summary="ModelOnly"></div>
@@ -33,6 +42,13 @@
         <label class="form-label" asp-for="PhoneNumber"></label>
         <input asp-for="PhoneNumber" class="form-control mb-3" />
         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+    </div>
+
+    <div class="form-group col-6">
+        <label asp-for="DepartmentId" class="control-label mb-2"></label>
+        <select asp-for="DepartmentId" asp-items="Departments" class="form-control">
+            <option value="@null">Choose Department</option>
+        </select>
     </div>
 
     <div class="form-group col-6">

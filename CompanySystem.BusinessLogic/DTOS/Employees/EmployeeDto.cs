@@ -34,6 +34,8 @@ namespace CompanySystem.BusinessLogic.DTOS.Employees
 
         public string EmployeeType { get; set; } = null!;
 
+        public string? Department { get; set; } 
+
 
     }
 }
