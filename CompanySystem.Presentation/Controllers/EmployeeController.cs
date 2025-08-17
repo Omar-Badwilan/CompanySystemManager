@@ -26,6 +26,13 @@ namespace CompanySystem.Presentation.Controllers
         public IActionResult Index(string search)
         {
             var employees = _employeeService.GetEmployees(search);
+
+            // Check if it's an AJAX request
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                // Return only the partial view for AJAX
+                return PartialView("Partials/_EmployeesTablePartial", employees);
+
+            // Otherwise, return the full page
             return View(employees);
         }
 

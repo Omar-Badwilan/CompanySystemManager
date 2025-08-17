@@ -2,17 +2,17 @@
 
 @if (Model.Any())
 {
-    <table class="table table-striped table-hover mt-4">
+    <table id="employeesTable" class="table table-striped table-hover mt-4">
         <thead class="text-center">
             <tr>
-                <th>@Html.DisplayNameFor(D => D.Name)</th>
-                <th>@Html.DisplayNameFor(D => D.Email)</th>
-                <th>@Html.DisplayNameFor(D => D.Department)</th>
-                <th>@Html.DisplayNameFor(D => D.EmployeeType)</th>
-                <th>@Html.DisplayNameFor(D => D.Age)</th>
-                <th>@Html.DisplayNameFor(D => D.Salary)</th>
-                <th>@Html.DisplayNameFor(D => D.IsActive)</th>
-                <th>@Html.DisplayNameFor(D => D.Gender)</th>
+                <th>@Html.DisplayNameFor(E => E.First().Name)</th>
+                <th>@Html.DisplayNameFor(E => E.First().Email)</th>
+                <th>@Html.DisplayNameFor(E => E.First().Department)</th>
+                <th>@Html.DisplayNameFor(E => E.First().EmployeeType)</th>
+                <th>@Html.DisplayNameFor(E => E.First().Age)</th>
+                <th>@Html.DisplayNameFor(E => E.First().Salary)</th>
+                <th>@Html.DisplayNameFor(E => E.First().IsActive)</th>
+                <th>@Html.DisplayNameFor(E => E.First().Gender)</th>
                 <th>Details</th>
                 <th>Update</th>
                 <th>Delete</th>
@@ -22,14 +22,14 @@
             @foreach (var employee in Model)
             {
                 <tr>
-                    <td>@employee.Name</td>
-                    <td>@employee.Email</td>
-                    <td>@employee.Department</td>
-                    <td>@employee.EmployeeType</td>
-                    <td>@employee.Age</td>
-                    <td>@employee.Salary</td>
-                    <td>@employee.IsActive</td>
-                    <td>@employee.Gender</td>
+                    <td>@Html.DisplayFor(X => employee.Name)</td>
+                    <td>@Html.DisplayFor(X => employee.Email)</td>
+                    <td>@Html.DisplayFor(X => employee.Department)</td>
+                    <td>@Html.DisplayFor(X => employee.EmployeeType)</td>
+                    <td>@Html.DisplayFor(X => employee.Age)</td>
+                    <td>@Html.DisplayFor(X => employee.Salary)</td>
+                    <td>@Html.DisplayFor(X => employee.IsActive)</td>
+                    <td>@Html.DisplayFor(X => employee.Gender)</td>
                     <partial name="_ButtonsPartial" model="@employee.Id" />
                 </tr>
 
