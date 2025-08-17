@@ -1,12 +1,12 @@
-﻿using CompanySystem.BusinessLogic.DTOS.Employees;
-using CompanySystem.BusinessLogic.Services.Departments;
-using CompanySystem.BusinessLogic.Services.Employees;
-using CompanySystem.DataAccessLayer.Models.Departments;
-using CompanySystem.DataAccessLayer.Models.Employees;
-using CompanySystem.Presentation.ViewModels.Employees;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+﻿    using CompanySystem.BusinessLogic.DTOS.Employees;
+    using CompanySystem.BusinessLogic.Services.Departments;
+    using CompanySystem.BusinessLogic.Services.Employees;
+    using CompanySystem.DataAccessLayer.Models.Departments;
+    using CompanySystem.DataAccessLayer.Models.Employees;
+    using CompanySystem.Presentation.ViewModels.Employees;
+    using Microsoft.AspNetCore.Http.HttpResults;
+    using Microsoft.AspNetCore.Mvc;
+    using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace CompanySystem.Presentation.Controllers
 {
@@ -23,9 +23,9 @@ namespace CompanySystem.Presentation.Controllers
         #region Index
         [HttpGet]
 
-        public IActionResult Index()
+        public IActionResult Index(string search)
         {
-            var employees = _employeeService.GetAllEmployees();
+            var employees = _employeeService.GetEmployees(search);
             return View(employees);
         }
 

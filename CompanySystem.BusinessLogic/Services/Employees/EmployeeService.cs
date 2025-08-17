@@ -11,11 +11,11 @@ namespace CompanySystem.BusinessLogic.Services.Employees
         private readonly IEmployeeRepository _employeeRepository = employeeRepository;
 
 
-        public IEnumerable<EmployeeDto> GetAllEmployees()
+        public IEnumerable<EmployeeDto> GetEmployees(string search)
         {
             var employees = _employeeRepository
                 .GetIQueryable()
-                .Where(E => !E.IsDeleted)
+                .Where(E => !E.IsDeleted && (string.IsNullOrEmpty(search) || E.Name.ToLower().Contains(search.ToLower())) )
                 .Include(E => E.Department)
                 .Select(employee => new EmployeeDto()
                 {
