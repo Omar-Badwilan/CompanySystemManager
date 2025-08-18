@@ -3,6 +3,7 @@ using CompanySystem.BusinessLogic.Services.Employees;
 using CompanySystem.DataAccessLayer.Persistence.Data.Contexts;
 using CompanySystem.DataAccessLayer.Persistence.Repositories.Departments;
 using CompanySystem.DataAccessLayer.Persistence.Repositories.Employees;
+using CompanySystem.DataAccessLayer.Persistence.UnitOfWork;
 using CompanySystem.Presentation.Mapping;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,6 +30,8 @@ namespace CompanySystem.Presentation
             builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
+
+            builder.Services.AddScoped<IUnitOfWork , UnitOfWork>();
 
             builder.Services.AddScoped<IDepartmentService, DepartmentService>();
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();

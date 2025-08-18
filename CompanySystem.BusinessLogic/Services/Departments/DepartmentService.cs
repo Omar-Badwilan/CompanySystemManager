@@ -1,17 +1,18 @@
 ﻿using CompanySystem.BusinessLogic.DTOS.Departments;
 using CompanySystem.DataAccessLayer.Models.Departments;
 using CompanySystem.DataAccessLayer.Persistence.Repositories.Departments;
+using CompanySystem.DataAccessLayer.Persistence.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 
 namespace CompanySystem.BusinessLogic.Services.Departments
 {
-    public class DepartmentService(IDepartmentRepository departmentRepository) : IDepartmentService 
+    public class DepartmentService(IUnitOfWork unitOfWork) : IDepartmentService 
     {
-        private readonly IDepartmentRepository _departmentRepository = departmentRepository;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         public IEnumerable<DepartmentDto> GetAllDepartments()
         {
-            var departments = _departmentRepository
+            var departments = _unitOfWork.DepartmentRepository
                 .GetIQueryable()
                 .Where(d=>!d.IsDeleted)
                 .Select(department => new DepartmentDto
@@ -27,7 +28,7 @@ namespace CompanySystem.BusinessLogic.Services.Departments
 
         public DepartmentDetailsDto? GetDepartmentsById(int id)
         {
-            var department = _departmentRepository.GetById(id);
+            var department = _unitOfWork.DepartmentRepository.GetById(id);
 
             if (department is { })
                 return new DepartmentDetailsDto
@@ -61,7 +62,9 @@ namespace CompanySystem.BusinessLogic.Services.Departments
 
             };
 
-            return _departmentRepository.Add(department);
+             _unitOfWork.DepartmentRepository.Add(department);
+
+            return _unitOfWork.Complete();
         }
 
         public int UpdateDepartment(UpdateDepartmentDto departmentDto)
@@ -78,16 +81,21 @@ namespace CompanySystem.BusinessLogic.Services.Departments
                 LastModifiedOn = DateTime.UtcNow
 
             };
-            return _departmentRepository.Update(department);
+            _unitOfWork.DepartmentRepository.Update(department);
+
+            return _unitOfWork.Complete();
         }
 
         public bool DeleteDepartment(int id)
         {
-            var department = _departmentRepository.GetById(id);
+
+            var departmentRepo =_unitOfWork.DepartmentRepository;
+            var department = departmentRepo.GetById(id);
 
             if(department is { })
-                return _departmentRepository.Delete(department) > 0;
-            return false;
+                departmentRepo.Delete(department);
+
+            return _unitOfWork.Complete() > 0;
         }
     }
 }
