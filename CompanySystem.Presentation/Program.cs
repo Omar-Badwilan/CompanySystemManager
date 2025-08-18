@@ -3,6 +3,7 @@ using CompanySystem.BusinessLogic.Services.Employees;
 using CompanySystem.DataAccessLayer.Persistence.Data.Contexts;
 using CompanySystem.DataAccessLayer.Persistence.Repositories.Departments;
 using CompanySystem.DataAccessLayer.Persistence.Repositories.Employees;
+using CompanySystem.Presentation.Mapping;
 using Microsoft.EntityFrameworkCore;
 
 namespace CompanySystem.Presentation
@@ -31,6 +32,9 @@ namespace CompanySystem.Presentation
 
             builder.Services.AddScoped<IDepartmentService, DepartmentService>();
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+
+            builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfile()));
+
             #endregion
 
             var app = builder.Build();

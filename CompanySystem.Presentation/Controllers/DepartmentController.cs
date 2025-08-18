@@ -1,4 +1,5 @@
-﻿using CompanySystem.BusinessLogic.DTOS.Departments;
+﻿using AutoMapper;
+using CompanySystem.BusinessLogic.DTOS.Departments;
 using CompanySystem.BusinessLogic.Services.Departments;
 using CompanySystem.Presentation.ViewModels.Departments;
 using Microsoft.AspNetCore.Authorization;
@@ -6,12 +7,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CompanySystem.Presentation.Controllers
 {
-    public class DepartmentController(IDepartmentService departmentService, ILogger<DepartmentController> logger, IWebHostEnvironment environment) : Controller
+    public class DepartmentController(IDepartmentService departmentService
+        , ILogger<DepartmentController> logger
+        , IWebHostEnvironment environment
+        ,IMapper mapper) : Controller
     {
         #region Services
         private readonly IDepartmentService _departmentService = departmentService;
         private readonly ILogger<DepartmentController> _logger = logger;
         private readonly IWebHostEnvironment _environment = environment;
+        private readonly IMapper _mapper = mapper;
         #endregion
 
         #region Index
@@ -55,14 +60,17 @@ namespace CompanySystem.Presentation.Controllers
             var message = string.Empty;
             try
             {
-                var createdDepartment = new CreatedDepartmentDto()
+
+                /*                var createdDepartment = new CreatedDepartmentDto()
                 {
                     Code = departmentVM.Code,
                     Name = departmentVM.Name,
                     Description = departmentVM.Description,
                     CreationDate = departmentVM.CreationDate
 
-                };
+                };*/
+
+                var createdDepartment =_mapper.Map<CreatedDepartmentDto>(departmentVM);
 
                 var created = _departmentService.CreateDepartment(createdDepartment) > 0;
 
@@ -100,13 +108,9 @@ namespace CompanySystem.Presentation.Controllers
             if (department is null)
                 return NotFound(); // 404
 
-            return View(new DepartmentViewModel()
-            {
-                Code = department.Code,
-                Name = department.Name,
-                Description = department.Description,
-                CreationDate = department.CreationDate
-            });
+            var departmentVM = _mapper.Map<DepartmentDetailsDto, DepartmentViewModel>(department);
+
+            return View(departmentVM);
         }
 
         [HttpPost] //Post: /Department/Edit
@@ -120,15 +124,21 @@ namespace CompanySystem.Presentation.Controllers
             var message = string.Empty;
             try
             {
-                var departmentToUpdate = new UpdateDepartmentDto()
-                {
-                    Id = id,
-                    Code = departmentVM.Code,
-                    Name = departmentVM.Name,
-                    Description = departmentVM.Description,
-                    CreationDate = departmentVM.CreationDate
+                #region Manual
+                /*                var departmentToUpdate = new UpdateDepartmentDto()
+                        {
+                            Id = id,
+                            Code = departmentVM.Code,
+                            Name = departmentVM.Name,
+                            Description = departmentVM.Description,
+                            CreationDate = departmentVM.CreationDate
+                        };*/
+                #endregion
 
-                };
+                //var departmentToUpdate = _mapper.Map<UpdateDepartmentDto, DepartmentViewModel,>(departmentVM);
+
+                var departmentToUpdate = _mapper.Map<UpdateDepartmentDto>(departmentVM);
+
 
                 var updated = _departmentService.UpdateDepartment(departmentToUpdate) > 0;
 
