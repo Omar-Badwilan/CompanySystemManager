@@ -1,4 +1,5 @@
-﻿    using CompanySystem.BusinessLogic.DTOS.Employees;
+﻿using AutoMapper;
+using CompanySystem.BusinessLogic.DTOS.Employees;
     using CompanySystem.BusinessLogic.Services.Departments;
     using CompanySystem.BusinessLogic.Services.Employees;
     using CompanySystem.DataAccessLayer.Models.Departments;
@@ -12,12 +13,14 @@ namespace CompanySystem.Presentation.Controllers
 {
     public class EmployeeController(IEmployeeService employeeService,
         ILogger<EmployeeController> logger, 
-        IWebHostEnvironment environment) : Controller
+        IWebHostEnvironment environment,
+        IMapper mapper) : Controller
     {
         #region Services
         private readonly IEmployeeService _employeeService = employeeService;
         private readonly ILogger<EmployeeController> _logger = logger;
         private readonly IWebHostEnvironment _environment = environment;
+        private readonly IMapper _mapper = mapper;
         #endregion
 
         #region Index
@@ -73,20 +76,9 @@ namespace CompanySystem.Presentation.Controllers
             var message = string.Empty;
             try
             {
-                var createdEmployee = new CreatedEmployeeDto()
-                {
-                    Name = employeeVM.Name,
-                    Age = employeeVM.Age,
-                    Address = employeeVM.Address,
-                    Salary = employeeVM.Salary,
-                    IsActive = employeeVM.IsActive,
-                    Email = employeeVM.Email,
-                    PhoneNumber = employeeVM.PhoneNumber,
-                    HiringDate = employeeVM.HiringDate,
-                    Gender = employeeVM.Gender,
-                    EmployeeType = employeeVM.EmployeeType,
-                    DepartmentId = employeeVM.DepartmentId,
-                };
+
+                var createdEmployee =_mapper.Map<CreatedEmployeeDto>(employeeVM);
+
                 var created = _employeeService.CreateEmployee(createdEmployee) > 0;
 
                 if (created)
@@ -120,20 +112,9 @@ namespace CompanySystem.Presentation.Controllers
 
             if (employee is null)
                 return NotFound();
-            return View(new EmployeeViewModel()
-            {
-               Name = employee.Name,
-               Address = employee.Address,
-               Email = employee.Email,
-               Age = employee.Age,
-               Salary = employee.Salary,
-               PhoneNumber = employee.PhoneNumber,
-               IsActive = employee.IsActive,
-               EmployeeType = employee.EmployeeType,
-               Gender = employee.Gender,
-               HiringDate = employee.HiringDate,
-               DepartmentId = employee.DepartmentId,
-            });
+
+            var employeeVm = _mapper.Map<EmployeeViewModel>(employee);
+            return View(employeeVm);
         }
 
         [HttpPost]
@@ -147,7 +128,7 @@ namespace CompanySystem.Presentation.Controllers
             var message = string.Empty;
             try
             {
-                var employeeToUpdate = new UpdateEmployeeDto()
+/*                var employeeToUpdate = new UpdateEmployeeDto()
                 {
                     Id = id,
                     Name = employeeVM.Name,
@@ -161,7 +142,9 @@ namespace CompanySystem.Presentation.Controllers
                     Gender = employeeVM.Gender,
                     EmployeeType = employeeVM.EmployeeType,
                     DepartmentId = employeeVM.DepartmentId,
-                };
+                };*/
+
+                var employeeToUpdate = _mapper.Map<UpdateEmployeeDto>(employeeVM);
                 var updated = _employeeService.UpdateEmployee(employeeToUpdate) > 0;
 
                 if (updated )

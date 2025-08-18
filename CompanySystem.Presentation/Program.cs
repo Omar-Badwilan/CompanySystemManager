@@ -33,6 +33,7 @@ namespace CompanySystem.Presentation
             builder.Services.AddScoped<IDepartmentService, DepartmentService>();
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
+
             builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfile()));
 
             #endregion

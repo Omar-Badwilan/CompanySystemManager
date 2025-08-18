@@ -5,6 +5,7 @@ namespace CompanySystem.Presentation.ViewModels.Employees
 {
     public class EmployeeViewModel
     {
+        public int Id { get; set; }
         [Required]
         [MaxLength(50, ErrorMessage = "Max Length of Name is 50 chars")]
         [MinLength(5, ErrorMessage = "Min Length of Name is 5 chars")]
@@ -40,5 +41,8 @@ namespace CompanySystem.Presentation.ViewModels.Employees
         [Display(Name ="Department")]
         public int? DepartmentId { get; set; }
 
+        internal class UpdateEmployeeDto
+        {
+        }
     }
 }

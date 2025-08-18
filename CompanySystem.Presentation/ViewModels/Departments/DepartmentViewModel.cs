@@ -4,6 +4,7 @@ namespace CompanySystem.Presentation.ViewModels.Departments
 {
     public class DepartmentViewModel
     {
+        public int Id { get; set; }
         [Required(ErrorMessage = "Code is Required !")]
         public string Name { get; set; } = null!; // Department Name 
         public string Code { get; set; } = null!;
