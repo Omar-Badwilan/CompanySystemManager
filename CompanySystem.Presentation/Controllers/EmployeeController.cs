@@ -173,7 +173,6 @@ namespace CompanySystem.Presentation.Controllers
         #region Delete
         [HttpPost]
         [ValidateAntiForgeryToken]
-
         public IActionResult Delete(int id)
         {
             var message = string.Empty;

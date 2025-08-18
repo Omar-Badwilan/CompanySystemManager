@@ -14,7 +14,7 @@
     @if (ViewContext.RouteData.Values["controller"]?.ToString() == "Employee")
     {
         <!-- Delete Button trigger modal -->
-        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@Model">
         <i class="fas fa-trash"></i>Delete
         </button>
     }
