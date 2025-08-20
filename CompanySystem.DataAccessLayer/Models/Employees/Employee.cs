@@ -34,5 +34,7 @@ namespace CompanySystem.DataAccessLayer.Models.Employees
         //Navigational property (OtO)
         public virtual Department? Department { get; set; }
 
+        public string? Image { get; set; }
+
     }
 }

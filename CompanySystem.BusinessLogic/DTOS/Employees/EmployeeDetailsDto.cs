@@ -46,5 +46,7 @@ namespace CompanySystem.BusinessLogic.DTOS.Employees
 
         public int? DepartmentId { get; set; }
 
+        public string? Image {  get; set; }
+
     }
 }

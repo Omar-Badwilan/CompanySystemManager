@@ -1,4 +1,5 @@
 ﻿using CompanySystem.DataAccessLayer.Common.Enums;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace CompanySystem.BusinessLogic.DTOS.Employees
@@ -38,6 +39,8 @@ namespace CompanySystem.BusinessLogic.DTOS.Employees
         public EmployeeType EmployeeType { get; set; }
 
         public int? DepartmentId { get; set; }
+
+        public IFormFile? Image { get; set; }
 
     }
 }

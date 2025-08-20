@@ -2,7 +2,7 @@
 
 namespace CompanySystem.BusinessLogic.Common.Services.Attachments
 {
-    internal interface IAttachmentService
+    public interface IAttachmentService
     {
         string? Upload(IFormFile file, string foldarName);
 

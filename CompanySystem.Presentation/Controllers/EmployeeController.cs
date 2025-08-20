@@ -71,7 +71,7 @@ namespace CompanySystem.Presentation.Controllers
 
         public IActionResult Create(EmployeeViewModel employeeVM)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) //serverside validation
                 return View(employeeVM);
             var message = string.Empty;
             try

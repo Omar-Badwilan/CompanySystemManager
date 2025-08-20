@@ -1,3 +1,4 @@
+using CompanySystem.BusinessLogic.Common.Services.Attachments;
 using CompanySystem.BusinessLogic.Services.Departments;
 using CompanySystem.BusinessLogic.Services.Employees;
 using CompanySystem.DataAccessLayer.Persistence.Data.Contexts;
@@ -27,15 +28,14 @@ namespace CompanySystem.Presentation
                 .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
+
             builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-
-
             builder.Services.AddScoped<IUnitOfWork , UnitOfWork>();
 
             builder.Services.AddScoped<IDepartmentService, DepartmentService>();
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
-
+            builder.Services.AddTransient<IAttachmentService,AttachmentService>();
 
             builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfile()));
 

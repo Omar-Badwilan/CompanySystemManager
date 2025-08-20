@@ -1,4 +1,5 @@
-﻿using CompanySystem.BusinessLogic.DTOS.Employees;
+﻿using CompanySystem.BusinessLogic.Common.Services.Attachments;
+using CompanySystem.BusinessLogic.DTOS.Employees;
 using CompanySystem.DataAccessLayer.Models.Employees;
 using CompanySystem.DataAccessLayer.Persistence.Repositories.Employees;
 using CompanySystem.DataAccessLayer.Persistence.UnitOfWork;
@@ -7,9 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CompanySystem.BusinessLogic.Services.Employees
 {
-    public class EmployeeService(IUnitOfWork unitOfWork) : IEmployeeService
+    public class EmployeeService(IUnitOfWork unitOfWork ,IAttachmentService attachmentService) : IEmployeeService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IAttachmentService _attachmentService = attachmentService;
 
         public IEnumerable<EmployeeDto> GetEmployees(string search)
         {
@@ -60,6 +62,8 @@ namespace CompanySystem.BusinessLogic.Services.Employees
 
         public int CreateEmployee(CreatedEmployeeDto employeeDto)
         {
+
+
             var employee = new Employee()
             {
                 Name = employeeDto.Name,
@@ -78,7 +82,12 @@ namespace CompanySystem.BusinessLogic.Services.Employees
                 LastModifiedOn = DateTime.UtcNow,
             };
 
-             _unitOfWork.EmployeeRepository.Add(employee);
+            if(employeeDto.Image is not null)
+                employee.Image = _attachmentService.Upload(employeeDto.Image, "images");
+
+
+
+            _unitOfWork.EmployeeRepository.Add(employee);
 
             return _unitOfWork.Complete();
         }

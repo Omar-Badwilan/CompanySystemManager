@@ -41,8 +41,6 @@ namespace CompanySystem.Presentation.ViewModels.Employees
         [Display(Name ="Department")]
         public int? DepartmentId { get; set; }
 
-        internal class UpdateEmployeeDto
-        {
-        }
+        public IFormFile? Image { get; set; }
     }
 }
