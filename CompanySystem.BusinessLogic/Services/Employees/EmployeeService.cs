@@ -29,7 +29,7 @@ namespace CompanySystem.BusinessLogic.Services.Employees
                 Email = employee.Email,
                 Gender = employee.Gender.ToString(),
                 EmployeeType = employee.EmployeeType.ToString(),
-                Department = employee.Department != null ? employee.Department.Name : "No Department"
+                Department = employee.Department != null ? employee.Department.Name : "No Department",
                 }).ToList();
 
             return employees;
@@ -53,6 +53,7 @@ namespace CompanySystem.BusinessLogic.Services.Employees
                     Gender = employee.Gender,
                     EmployeeType = employee.EmployeeType,
                     DepartmentId = employee.DepartmentId,
+                    Image = employee.Image,
                 };
 
             return null;
@@ -112,6 +113,12 @@ namespace CompanySystem.BusinessLogic.Services.Employees
                 LastModifiedBy = 1,
                 LastModifiedOn = DateTime.UtcNow,
             };
+
+               // ✅ Only update image if a new one was uploaded
+    if (employeeDto.Image is not null)
+    {
+        employee.Image = _attachmentService.Upload(employeeDto.Image, "images");
+    }
             _unitOfWork.EmployeeRepository.Update(employee);
 
             return _unitOfWork.Complete();
