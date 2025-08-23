@@ -1,8 +1,11 @@
+using CompanySystem.BusinessLogic.Common.Services.Attachments;
 using CompanySystem.BusinessLogic.Services.Departments;
 using CompanySystem.BusinessLogic.Services.Employees;
 using CompanySystem.DataAccessLayer.Persistence.Data.Contexts;
 using CompanySystem.DataAccessLayer.Persistence.Repositories.Departments;
 using CompanySystem.DataAccessLayer.Persistence.Repositories.Employees;
+using CompanySystem.DataAccessLayer.Persistence.UnitOfWork;
+using CompanySystem.Presentation.Mapping;
 using Microsoft.EntityFrameworkCore;
 
 namespace CompanySystem.Presentation
@@ -20,15 +23,22 @@ namespace CompanySystem.Presentation
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options
+                .UseLazyLoadingProxies()
+                .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+
 
             builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-
+            builder.Services.AddScoped<IUnitOfWork , UnitOfWork>();
 
             builder.Services.AddScoped<IDepartmentService, DepartmentService>();
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+            builder.Services.AddTransient<IAttachmentService,AttachmentService>();
+
+            builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfile()));
+
             #endregion
 
             var app = builder.Build();

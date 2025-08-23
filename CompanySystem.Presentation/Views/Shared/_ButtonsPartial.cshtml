@@ -1,0 +1,31 @@
+﻿@model int
+<td>
+    <a  asp-action="Details" asp-route-id="@Model" class="btn btn-warning">
+        <i class="fas fa-eye"></i>Details
+    </a>
+</td>
+<td>
+    <a asp-action="Edit" asp-route-id="@Model" class="btn btn-success">
+        <i class="fas fa-edit"></i>Update
+    </a>
+</td>
+<td>
+    <!--Employee modal and Department view at delete-->
+    @if (ViewContext.RouteData.Values["controller"]?.ToString() == "Employee")
+    {
+        <!-- Delete Button trigger modal -->
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@Model">
+        <i class="fas fa-trash"></i>Delete
+        </button>
+    }
+    else
+    {
+        <!-- Delete View -->
+        <a asp-action="Delete" asp-route-id="@Model" class="btn btn-danger">
+            <i class="fas fa-trash"></i>Delete
+        </a>
+    }
+
+
+
+</td>

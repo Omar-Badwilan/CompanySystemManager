@@ -1,22 +1,26 @@
-﻿using CompanySystem.BusinessLogic.DTOS.Employees;
+﻿using CompanySystem.BusinessLogic.Common.Services.Attachments;
+using CompanySystem.BusinessLogic.DTOS.Employees;
 using CompanySystem.DataAccessLayer.Models.Employees;
 using CompanySystem.DataAccessLayer.Persistence.Repositories.Employees;
+using CompanySystem.DataAccessLayer.Persistence.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace CompanySystem.BusinessLogic.Services.Employees
 {
-    public class EmployeeService(IEmployeeRepository employeeRepository) : IEmployeeService
+    public class EmployeeService(IUnitOfWork unitOfWork ,IAttachmentService attachmentService) : IEmployeeService
     {
-        private readonly IEmployeeRepository _employeeRepository = employeeRepository;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IAttachmentService _attachmentService = attachmentService;
 
-
-        public IEnumerable<EmployeeDto> GetAllEmployees()
+        public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync(string search)
         {
-            var employees = _employeeRepository
-                .GetAllAsIQueryable().
-                Where(E => !E.IsDeleted).
-                Select(employee => new EmployeeDto()
-            {
+            var employees = await _unitOfWork.EmployeeRepository
+                .GetIQueryable()
+                .Where(E => !E.IsDeleted && (string.IsNullOrEmpty(search) || E.Name.ToLower().Contains(search.ToLower())) )
+                .Include(E => E.Department)
+                .Select(employee => new EmployeeDto()
+                {
                 Id = employee.Id,
                 Name = employee.Name,
                 Age = employee.Age,
@@ -25,13 +29,14 @@ namespace CompanySystem.BusinessLogic.Services.Employees
                 Email = employee.Email,
                 Gender = employee.Gender.ToString(),
                 EmployeeType = employee.EmployeeType.ToString(),
-            }).ToList();
+                Department = employee.Department != null ? employee.Department.Name : "No Department",
+                }).ToListAsync();
 
             return employees;
         }
-        public EmployeeDetailsDto? GetEmployeesById(int id)
+        public async Task<EmployeeDetailsDto?> GetEmployeesByIdAsync(int id)
         {
-            var employee = _employeeRepository.GetById(id);
+            var employee = await _unitOfWork.EmployeeRepository.GetByIdAsync(id);
 
             if (employee is { })
                 return new EmployeeDetailsDto()
@@ -47,6 +52,8 @@ namespace CompanySystem.BusinessLogic.Services.Employees
                     HiringDate = employee.HiringDate,
                     Gender = employee.Gender,
                     EmployeeType = employee.EmployeeType,
+                    DepartmentId = employee.DepartmentId,
+                    Image = employee.Image,
                 };
 
             return null;
@@ -54,8 +61,10 @@ namespace CompanySystem.BusinessLogic.Services.Employees
 
         }
 
-        public int CreateEmployee(CreatedEmployeeDto employeeDto)
+        public async Task<int> CreateEmployeeAsync(CreatedEmployeeDto employeeDto)
         {
+
+
             var employee = new Employee()
             {
                 Name = employeeDto.Name,
@@ -68,15 +77,23 @@ namespace CompanySystem.BusinessLogic.Services.Employees
                 HiringDate = employeeDto.HiringDate,
                 Gender = employeeDto.Gender,
                 EmployeeType = employeeDto.EmployeeType,
+                DepartmentId = employeeDto.DepartmentId,
                 CreatedBy = 1,
                 LastModifiedBy = 1,
                 LastModifiedOn = DateTime.UtcNow,
             };
 
-            return _employeeRepository.Add(employee);
+            if(employeeDto.Image is not null)
+                employee.Image = await _attachmentService.UploadFileAsync(employeeDto.Image, "images");
+
+
+
+            _unitOfWork.EmployeeRepository.Add(employee);
+
+            return await _unitOfWork.CompleteAsync();
         }
 
-        public int UpdateEmployee(UpdateEmployeeDto employeeDto)
+        public async Task<int> UpdateEmployeeAsync(UpdateEmployeeDto employeeDto)
         {
             var employee = new Employee()
             {
@@ -91,21 +108,32 @@ namespace CompanySystem.BusinessLogic.Services.Employees
                 HiringDate = employeeDto.HiringDate,
                 Gender = employeeDto.Gender,
                 EmployeeType = employeeDto.EmployeeType,
+                DepartmentId = employeeDto.DepartmentId,
                 CreatedBy = 1,
                 LastModifiedBy = 1,
                 LastModifiedOn = DateTime.UtcNow,
             };
-            return _employeeRepository.Update(employee);
+
+               //  Only update image if a new one was uploaded
+    if (employeeDto.Image is not null)
+    {
+        employee.Image = await _attachmentService.UploadFileAsync(employeeDto.Image, "images");
+    }
+            _unitOfWork.EmployeeRepository.Update(employee);
+
+            return await _unitOfWork.CompleteAsync();
         }
 
-        public bool DeleteEmployee(int id)
+        public async Task<bool> DeleteEmployeeAsync(int id)
         {
-            var employee = _employeeRepository.GetById(id);
+            var employeeRepo = _unitOfWork.EmployeeRepository;
+
+            var employee = await employeeRepo.GetByIdAsync(id);
 
             if (employee is { })
-                return _employeeRepository.Delete(employee) > 0;
+                 employeeRepo.Delete(employee);
 
-            return false;
+            return await _unitOfWork.CompleteAsync() > 0;
 
         }
     }

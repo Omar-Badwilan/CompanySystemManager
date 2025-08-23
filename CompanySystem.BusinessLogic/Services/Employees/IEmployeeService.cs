@@ -1,13 +1,13 @@
-﻿using CompanySystem.BusinessLogic.DTOS.Employees;
+﻿    using CompanySystem.BusinessLogic.DTOS.Employees;
 
 namespace CompanySystem.BusinessLogic.Services.Employees
 {
     public interface IEmployeeService
     {
-        IEnumerable<EmployeeDto> GetAllEmployees();
-        EmployeeDetailsDto? GetEmployeesById(int id);
-        int CreateEmployee(CreatedEmployeeDto employeeDto);
-        int UpdateEmployee(UpdateEmployeeDto employeeDto);
-        bool DeleteEmployee(int id);
+        Task<IEnumerable<EmployeeDto>> GetEmployeesAsync(string search);
+        Task<EmployeeDetailsDto?> GetEmployeesByIdAsync(int id);
+        Task<int> CreateEmployeeAsync(CreatedEmployeeDto employeeDto);
+        Task<int> UpdateEmployeeAsync(UpdateEmployeeDto employeeDto);
+        Task<bool> DeleteEmployeeAsync(int id);
     }
 }

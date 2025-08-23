@@ -1,26 +1,36 @@
-﻿using CompanySystem.BusinessLogic.DTOS.Employees;
+﻿using AutoMapper;
+using CompanySystem.BusinessLogic.DTOS.Employees;
 using CompanySystem.BusinessLogic.Services.Employees;
-using CompanySystem.DataAccessLayer.Models.Departments;
 using CompanySystem.Presentation.ViewModels.Employees;
 using Microsoft.AspNetCore.Mvc;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace CompanySystem.Presentation.Controllers
 {
-    public class EmployeeController(IEmployeeService employeeService, ILogger<EmployeeController> logger, IWebHostEnvironment environment) : Controller
+    public class EmployeeController(IEmployeeService employeeService,
+        ILogger<EmployeeController> logger, 
+        IWebHostEnvironment environment,
+        IMapper mapper) : Controller
     {
         #region Services
         private readonly IEmployeeService _employeeService = employeeService;
         private readonly ILogger<EmployeeController> _logger = logger;
         private readonly IWebHostEnvironment _environment = environment;
+        private readonly IMapper _mapper = mapper;
         #endregion
 
         #region Index
         [HttpGet]
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string search)
         {
-            var employees = _employeeService.GetAllEmployees();
+            var employees = await _employeeService.GetEmployeesAsync(search);
+
+            // Check if it's an AJAX request
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                // Return only the partial view for AJAX
+                return PartialView("Partials/_EmployeesTablePartial", employees);
+
+            // Otherwise, return the full page
             return View(employees);
         }
 
@@ -28,10 +38,10 @@ namespace CompanySystem.Presentation.Controllers
 
         #region Details
         [HttpGet]
-        public IActionResult Details(int? id) {
+        public async Task<IActionResult> Details(int? id) {
             if (id is null)
                 return BadRequest();
-            var employee = _employeeService.GetEmployeesById(id.Value);
+            var employee = await _employeeService.GetEmployeesByIdAsync(id.Value);
 
             if (employee is null)
                 return NotFound();
@@ -52,71 +62,60 @@ namespace CompanySystem.Presentation.Controllers
 
         //after Create button
         [HttpPost]
-        public IActionResult Create(CreatedEmployeeDto employeeDto)
+        [ValidateAntiForgeryToken]
+
+        public async Task<IActionResult> Create(EmployeeViewModel employeeVM)
         {
-            if (!ModelState.IsValid)
-                return View(employeeDto);
-
+            if (!ModelState.IsValid) //serverside validation
+                return View(employeeVM);
             var message = string.Empty;
-
             try
             {
-                var result = _employeeService.CreateEmployee(employeeDto);
-                //if created then >0
-                if (result > 0)
-                    return RedirectToAction("Index");
-                else
+
+                var createdEmployee =_mapper.Map<CreatedEmployeeDto>(employeeVM);
+
+                var created = await _employeeService.CreateEmployeeAsync(createdEmployee) > 0;
+
+                if (created)
                 {
-                    ModelState.AddModelError(string.Empty, "Employee isn't created");
-                    return View(employeeDto);
+                    TempData["Message"] = "Employee is created successfully!";
+                    return RedirectToAction("Index");
                 }
+                ModelState.AddModelError(string.Empty, "Employee isn't created");
             }
             catch (Exception ex)
             {
                 //1. Log Exception
                 _logger.LogError(ex,ex.Message);
-
                 //2. Set Message
                 message = _environment.IsDevelopment() ? ex.Message : "Employee isn't created";
+                ModelState.AddModelError(string.Empty, message);
             }
-            ModelState.AddModelError(string.Empty, message);
-            return View(employeeDto);
-
+            return View(employeeVM);
         }
-
-
-
         #endregion
 
         #region Update
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id is null)
                 return BadRequest();
 
-            var employee = _employeeService.GetEmployeesById(id.Value);
+            var employee = await _employeeService.GetEmployeesByIdAsync(id.Value);
 
             if (employee is null)
                 return NotFound();
-            return View(new EmployeeEditViewModel()
-            {
-               Name = employee.Name,
-               Address = employee.Address,
-               Email = employee.Email,
-               Age = employee.Age,
-               Salary = employee.Salary,
-               PhoneNumber = employee.PhoneNumber,
-               IsActive = employee.IsActive,
-               EmployeeType = employee.EmployeeType,
-               Gender = employee.Gender,
-               HiringDate = employee.HiringDate,
-            });
+
+            var employeeVm = _mapper.Map<EmployeeViewModel>(employee);
+            return View(employeeVm);
         }
 
         [HttpPost]
-        public IActionResult Edit([FromRoute] int id, EmployeeEditViewModel employeeVM)
+        [ValidateAntiForgeryToken]
+
+        public async Task<IActionResult> Edit([FromRoute] int id, EmployeeViewModel employeeVM)     
         {
             if (!ModelState.IsValid)
                 return View(employeeVM);
@@ -124,7 +123,7 @@ namespace CompanySystem.Presentation.Controllers
             var message = string.Empty;
             try
             {
-                var employeeToUpdate = new UpdateEmployeeDto()
+/*                var employeeToUpdate = new UpdateEmployeeDto()
                 {
                     Id = id,
                     Name = employeeVM.Name,
@@ -137,13 +136,18 @@ namespace CompanySystem.Presentation.Controllers
                     HiringDate = employeeVM.HiringDate,
                     Gender = employeeVM.Gender,
                     EmployeeType = employeeVM.EmployeeType,
-                };
-                var updated = _employeeService.UpdateEmployee(employeeToUpdate);
+                    DepartmentId = employeeVM.DepartmentId,
+                };*/
 
-                if (updated > 0)
+                var employeeToUpdate = _mapper.Map<UpdateEmployeeDto>(employeeVM);
+                var updated = await _employeeService.UpdateEmployeeAsync(employeeToUpdate) > 0;
+
+                if (updated )
+                {
+                    TempData["Message"] = "Employee is updated successfully!";
                     return RedirectToAction(nameof(Index));
-
-                message = "Employee couldn't be updated";
+                }
+                ModelState.AddModelError(string.Empty, "Employee couldn't be updated");
 
             }
             catch (Exception ex)
@@ -153,8 +157,8 @@ namespace CompanySystem.Presentation.Controllers
 
                 //2. Set
                 message = _environment.IsDevelopment() ? ex.Message : "Employee couldn't be updated";
+                ModelState.AddModelError(string.Empty, message);
             }
-            ModelState.AddModelError(string.Empty, message);
             return View(employeeVM);
         }
 
@@ -163,17 +167,20 @@ namespace CompanySystem.Presentation.Controllers
 
         #region Delete
         [HttpPost]
-        public IActionResult Delete(int id)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
         {
             var message = string.Empty;
 
             try
             {
-                var deleted = _employeeService.DeleteEmployee(id);
+                var deleted = await _employeeService.DeleteEmployeeAsync(id);
                 if (deleted)
+                {
+                    TempData["Message"] = "Employee is deleted successfully!";
                     return RedirectToAction(nameof(Index));
-
-                message = "Employee couldn't be deleted";
+                }
+                ModelState.AddModelError(string.Empty, "Employee couldn't be created");
             }
             catch (Exception ex)
             {
@@ -182,10 +189,10 @@ namespace CompanySystem.Presentation.Controllers
 
                 //2. Set Message
                 message = _environment.IsDevelopment() ? ex.Message : "Employee couldn't be deleted";
+                ModelState.AddModelError(string.Empty, message);
             }
-            ModelState.AddModelError(string.Empty, message);
             return View();
         }
-        #endregion
+        #endregion 
     }
 }

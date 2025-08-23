@@ -9,15 +9,15 @@ namespace CompanySystem.DataAccessLayer.Persistence.Repositories._Generic
 {
     public interface IGenericRepository <T> where T: BaseEntity
     {
-        IEnumerable<T> GetAll(bool withAsNoTracking = true);
-        IQueryable<T> GetAllAsIQueryable();
 
-        T? GetById(int id);
+        Task<T?> GetByIdAsync(int id);
+        Task<IEnumerable<T>> GetAllAsync(bool withAsNoTracking = true);
+        IQueryable<T> GetIQueryable();
+        IEnumerable<T> GetIEnumerable();
+ 
 
-        int Add(T entity);
-
-        int Update(T entity);
-
-        int Delete(T entity);
+        void Add(T entity);
+        void Update(T entity);
+        void Delete(T entity);
     }
 }
