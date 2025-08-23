@@ -2,7 +2,6 @@
 using CompanySystem.BusinessLogic.DTOS.Departments;
 using CompanySystem.BusinessLogic.Services.Departments;
 using CompanySystem.Presentation.ViewModels.Departments;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CompanySystem.Presentation.Controllers
@@ -21,20 +20,20 @@ namespace CompanySystem.Presentation.Controllers
 
         #region Index
         [HttpGet]//GET: /Department/Index   
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var departments = _departmentService.GetAllDepartments();
+            var departments = await _departmentService.GetAllDepartmentsAsync();
             return View(departments);
         }
         #endregion
 
         #region Details
         [HttpGet] //GET: /Department/Details
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id is null)
                 return BadRequest();
-            var department = _departmentService.GetDepartmentsById(id.Value);
+            var department = await _departmentService.GetDepartmentsByIdAsync(id.Value);
 
             if (department is null)
                 return NotFound();
@@ -52,7 +51,7 @@ namespace CompanySystem.Presentation.Controllers
         //when do create button
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(DepartmentViewModel departmentVM)
+        public async Task<IActionResult> Create(DepartmentViewModel departmentVM)
         {
             if (!ModelState.IsValid)
                 return View(departmentVM); // if there is error it returns the same view with the model state errors
@@ -72,7 +71,7 @@ namespace CompanySystem.Presentation.Controllers
 
                 var createdDepartment =_mapper.Map<CreatedDepartmentDto>(departmentVM);
 
-                var created = _departmentService.CreateDepartment(createdDepartment) > 0;
+                var created = await _departmentService.CreateDepartmentAsync(createdDepartment) > 0;
 
                 if (created)
                 {
@@ -98,12 +97,12 @@ namespace CompanySystem.Presentation.Controllers
 
         #region Update
         [HttpGet] //GET: /Department/Edit/id?
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id is null)
                 return BadRequest(); // 400
 
-            var department = _departmentService.GetDepartmentsById(id.Value);
+            var department = await _departmentService.GetDepartmentsByIdAsync(id.Value);
 
             if (department is null)
                 return NotFound(); // 404
@@ -116,7 +115,7 @@ namespace CompanySystem.Presentation.Controllers
         [HttpPost] //Post: /Department/Edit
         [ValidateAntiForgeryToken]
 
-        public IActionResult Edit([FromRoute] int id, DepartmentViewModel departmentVM)
+        public async Task<IActionResult> Edit([FromRoute] int id, DepartmentViewModel departmentVM)
         {
             if (!ModelState.IsValid) //server side validation
                 return View(departmentVM);
@@ -140,7 +139,7 @@ namespace CompanySystem.Presentation.Controllers
                 var departmentToUpdate = _mapper.Map<UpdateDepartmentDto>(departmentVM);
 
 
-                var updated = _departmentService.UpdateDepartment(departmentToUpdate) > 0;
+                var updated = await _departmentService.UpdateDepartmentAsync(departmentToUpdate) > 0;
 
                 if (updated)
                 {
@@ -166,11 +165,11 @@ namespace CompanySystem.Presentation.Controllers
 
         #region Delete
         [HttpGet] //GET: /Department/Delete/id?
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id is null)
                 return BadRequest();
-            var department = _departmentService.GetDepartmentsById(id.Value);
+            var department = await _departmentService.GetDepartmentsByIdAsync(id.Value);
 
             if (department is null)
                 return NotFound();
@@ -181,13 +180,13 @@ namespace CompanySystem.Presentation.Controllers
         [HttpPost] //Post 
         [ValidateAntiForgeryToken]
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var message = string.Empty;
 
             try
             {
-                var deleted = _departmentService.DeleteDepartment(id);
+                var deleted =await  _departmentService.DeleteDepartmentAsync(id);
                 if (deleted)
                 {
                     TempData["Message"] = "Department is Deleted";

@@ -2,7 +2,7 @@
 @inject IDepartmentService departmentService
 
 @{
-    var Departments = new SelectList(departmentService.GetAllDepartments(), nameof(DepartmentDto.Id)
+    var Departments = new SelectList(await departmentService.GetAllDepartmentsAsync(), nameof(DepartmentDto.Id)
     ,nameof(DepartmentDto.Name));
 }
 

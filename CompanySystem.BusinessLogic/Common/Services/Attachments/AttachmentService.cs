@@ -6,7 +6,7 @@ namespace CompanySystem.BusinessLogic.Common.Services.Attachments
     {
         private readonly List<string> _allowedExtensions = new() { ".png", ".jpg", ".jpeg" };
         private const int _allowedMaxSize = 2_097_152;
-        public string? Upload(IFormFile file, string foldarName)
+        public async Task<string?> UploadFileAsync(IFormFile file, string foldarName)
         {
             var extension = Path.GetExtension(file.FileName);
 
@@ -33,7 +33,7 @@ namespace CompanySystem.BusinessLogic.Common.Services.Attachments
 
             using var fileStream = File.Create(filePath);
 
-            file.CopyTo(fileStream);
+            await file.CopyToAsync(fileStream);
 
             return fileName;
         }

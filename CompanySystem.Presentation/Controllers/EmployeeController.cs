@@ -1,13 +1,8 @@
 ﻿using AutoMapper;
 using CompanySystem.BusinessLogic.DTOS.Employees;
-    using CompanySystem.BusinessLogic.Services.Departments;
-    using CompanySystem.BusinessLogic.Services.Employees;
-    using CompanySystem.DataAccessLayer.Models.Departments;
-    using CompanySystem.DataAccessLayer.Models.Employees;
-    using CompanySystem.Presentation.ViewModels.Employees;
-    using Microsoft.AspNetCore.Http.HttpResults;
-    using Microsoft.AspNetCore.Mvc;
-    using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using CompanySystem.BusinessLogic.Services.Employees;
+using CompanySystem.Presentation.ViewModels.Employees;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CompanySystem.Presentation.Controllers
 {
@@ -26,9 +21,9 @@ namespace CompanySystem.Presentation.Controllers
         #region Index
         [HttpGet]
 
-        public IActionResult Index(string search)
+        public async Task<IActionResult> Index(string search)
         {
-            var employees = _employeeService.GetEmployees(search);
+            var employees = await _employeeService.GetEmployeesAsync(search);
 
             // Check if it's an AJAX request
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
@@ -43,10 +38,10 @@ namespace CompanySystem.Presentation.Controllers
 
         #region Details
         [HttpGet]
-        public IActionResult Details(int? id) {
+        public async Task<IActionResult> Details(int? id) {
             if (id is null)
                 return BadRequest();
-            var employee = _employeeService.GetEmployeesById(id.Value);
+            var employee = await _employeeService.GetEmployeesByIdAsync(id.Value);
 
             if (employee is null)
                 return NotFound();
@@ -69,7 +64,7 @@ namespace CompanySystem.Presentation.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
 
-        public IActionResult Create(EmployeeViewModel employeeVM)
+        public async Task<IActionResult> Create(EmployeeViewModel employeeVM)
         {
             if (!ModelState.IsValid) //serverside validation
                 return View(employeeVM);
@@ -79,7 +74,7 @@ namespace CompanySystem.Presentation.Controllers
 
                 var createdEmployee =_mapper.Map<CreatedEmployeeDto>(employeeVM);
 
-                var created = _employeeService.CreateEmployee(createdEmployee) > 0;
+                var created = await _employeeService.CreateEmployeeAsync(createdEmployee) > 0;
 
                 if (created)
                 {
@@ -103,12 +98,12 @@ namespace CompanySystem.Presentation.Controllers
         #region Update
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id is null)
                 return BadRequest();
 
-            var employee = _employeeService.GetEmployeesById(id.Value);
+            var employee = await _employeeService.GetEmployeesByIdAsync(id.Value);
 
             if (employee is null)
                 return NotFound();
@@ -120,7 +115,7 @@ namespace CompanySystem.Presentation.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
 
-        public IActionResult Edit([FromRoute] int id, EmployeeViewModel employeeVM)     
+        public async Task<IActionResult> Edit([FromRoute] int id, EmployeeViewModel employeeVM)     
         {
             if (!ModelState.IsValid)
                 return View(employeeVM);
@@ -145,7 +140,7 @@ namespace CompanySystem.Presentation.Controllers
                 };*/
 
                 var employeeToUpdate = _mapper.Map<UpdateEmployeeDto>(employeeVM);
-                var updated = _employeeService.UpdateEmployee(employeeToUpdate) > 0;
+                var updated = await _employeeService.UpdateEmployeeAsync(employeeToUpdate) > 0;
 
                 if (updated )
                 {
@@ -173,13 +168,13 @@ namespace CompanySystem.Presentation.Controllers
         #region Delete
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var message = string.Empty;
 
             try
             {
-                var deleted = _employeeService.DeleteEmployee(id);
+                var deleted = await _employeeService.DeleteEmployeeAsync(id);
                 if (deleted)
                 {
                     TempData["Message"] = "Employee is deleted successfully!";
@@ -198,6 +193,6 @@ namespace CompanySystem.Presentation.Controllers
             }
             return View();
         }
-        #endregion
+        #endregion 
     }
 }

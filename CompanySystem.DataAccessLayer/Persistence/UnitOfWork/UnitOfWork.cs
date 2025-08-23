@@ -17,14 +17,15 @@ namespace CompanySystem.DataAccessLayer.Persistence.UnitOfWork
             _dbContext = dbContext;
         }
 
-        public int Complete()
+        public async Task<int> CompleteAsync()
         {
-            return _dbContext.SaveChanges();
+            return await _dbContext.SaveChangesAsync();
         }
 
-        public void Dispose()
+        public async ValueTask DisposeAsync()
         {
-            _dbContext.Dispose();
+            await _dbContext.DisposeAsync();
         }
+
     }
 }

@@ -10,9 +10,9 @@ namespace CompanySystem.BusinessLogic.Services.Departments
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public IEnumerable<DepartmentDto> GetAllDepartments()
+        public async Task<IEnumerable<DepartmentDto>> GetAllDepartmentsAsync()
         {
-            var departments = _unitOfWork.DepartmentRepository
+            var departments = await _unitOfWork.DepartmentRepository
                 .GetIQueryable()
                 .Where(d=>!d.IsDeleted)
                 .Select(department => new DepartmentDto
@@ -21,14 +21,14 @@ namespace CompanySystem.BusinessLogic.Services.Departments
                 Name = department.Name,
                 Code = department.Code,
                 CreationDate = department.CreationDate 
-            }).AsNoTracking().ToList();
+            }).AsNoTracking().ToListAsync();
 
             return departments;
         }
 
-        public DepartmentDetailsDto? GetDepartmentsById(int id)
+        public async Task<DepartmentDetailsDto?> GetDepartmentsByIdAsync(int id)
         {
-            var department = _unitOfWork.DepartmentRepository.GetById(id);
+            var department = await _unitOfWork.DepartmentRepository.GetByIdAsync(id);
 
             if (department is { })
                 return new DepartmentDetailsDto
@@ -47,7 +47,7 @@ namespace CompanySystem.BusinessLogic.Services.Departments
             return null;
         }
 
-        public int CreateDepartment(CreatedDepartmentDto departmentDto)
+        public async Task<int> CreateDepartmentAsync(CreatedDepartmentDto departmentDto)
         {
             var department = new Department()  
             {
@@ -64,10 +64,10 @@ namespace CompanySystem.BusinessLogic.Services.Departments
 
              _unitOfWork.DepartmentRepository.Add(department);
 
-            return _unitOfWork.Complete();
+            return await _unitOfWork.CompleteAsync();
         }
 
-        public int UpdateDepartment(UpdateDepartmentDto departmentDto)
+        public async Task<int> UpdateDepartmentAsync(UpdateDepartmentDto departmentDto)
         {
             var department = new Department()
             {
@@ -83,19 +83,21 @@ namespace CompanySystem.BusinessLogic.Services.Departments
             };
             _unitOfWork.DepartmentRepository.Update(department);
 
-            return _unitOfWork.Complete();
+            return await _unitOfWork.CompleteAsync();
         }
 
-        public bool DeleteDepartment(int id)
+        public async Task<bool> DeleteDepartmentAsync(int id)
         {
 
             var departmentRepo =_unitOfWork.DepartmentRepository;
-            var department = departmentRepo.GetById(id);
+
+
+            var department = await departmentRepo.GetByIdAsync(id);
 
             if(department is { })
                 departmentRepo.Delete(department);
 
-            return _unitOfWork.Complete() > 0;
+            return await _unitOfWork.CompleteAsync() > 0;
         }
     }
 }

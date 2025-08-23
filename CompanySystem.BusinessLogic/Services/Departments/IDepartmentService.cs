@@ -3,10 +3,10 @@ namespace CompanySystem.BusinessLogic.Services.Departments
 {
     public interface IDepartmentService
     {
-        IEnumerable<DepartmentDto> GetAllDepartments();
-        DepartmentDetailsDto? GetDepartmentsById(int id);
-        int CreateDepartment(CreatedDepartmentDto departmentDto);
-        int UpdateDepartment(UpdateDepartmentDto departmentDto);
-        bool DeleteDepartment(int id);
+        Task<IEnumerable<DepartmentDto>> GetAllDepartmentsAsync();
+        Task<DepartmentDetailsDto?> GetDepartmentsByIdAsync(int id);
+        Task<int> CreateDepartmentAsync(CreatedDepartmentDto departmentDto);
+        Task<int> UpdateDepartmentAsync(UpdateDepartmentDto departmentDto);
+        Task<bool> DeleteDepartmentAsync(int id);
     }
 }

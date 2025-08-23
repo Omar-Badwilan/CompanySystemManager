@@ -12,7 +12,8 @@ namespace CompanySystem.Presentation.Mapping
         {
             #region Employee
             
-            CreateMap<EmployeeDetailsDto,EmployeeViewModel>();
+            CreateMap<EmployeeDetailsDto,EmployeeViewModel>()
+                .ForMember(dest => dest.Image, opt => opt.Ignore()); ;
 
             CreateMap<EmployeeViewModel,UpdateEmployeeDto>();
 
