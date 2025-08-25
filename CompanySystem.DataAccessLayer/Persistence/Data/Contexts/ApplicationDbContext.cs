@@ -1,12 +1,13 @@
 ﻿using CompanySystem.DataAccessLayer.Models.Departments;
 using CompanySystem.DataAccessLayer.Models.Employees;
+using CompanySystem.DataAccessLayer.Models.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System.Reflection;
 
 
 namespace CompanySystem.DataAccessLayer.Persistence.Data.Contexts
 {
-    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext(options)
+    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
     {
 
 

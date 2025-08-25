@@ -12,8 +12,4 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.18" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\Identity\" />
-  </ItemGroup>
-
 </Project>
