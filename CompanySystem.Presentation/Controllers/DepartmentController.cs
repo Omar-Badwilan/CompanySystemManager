@@ -2,10 +2,12 @@
 using CompanySystem.BusinessLogic.DTOS.Departments;
 using CompanySystem.BusinessLogic.Services.Departments;
 using CompanySystem.Presentation.ViewModels.Departments;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CompanySystem.Presentation.Controllers
 {
+    [Authorize]
     public class DepartmentController(IDepartmentService departmentService
         , ILogger<DepartmentController> logger
         , IWebHostEnvironment environment

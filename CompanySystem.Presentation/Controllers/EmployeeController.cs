@@ -2,10 +2,12 @@
 using CompanySystem.BusinessLogic.DTOS.Employees;
 using CompanySystem.BusinessLogic.Services.Employees;
 using CompanySystem.Presentation.ViewModels.Employees;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CompanySystem.Presentation.Controllers
 {
+    [Authorize]
     public class EmployeeController(IEmployeeService employeeService,
         ILogger<EmployeeController> logger, 
         IWebHostEnvironment environment,
