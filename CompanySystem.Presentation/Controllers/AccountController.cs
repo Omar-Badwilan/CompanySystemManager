@@ -1,4 +1,5 @@
 ﻿using CompanySystem.DataAccessLayer.Models.Identity;
+using CompanySystem.Presentation.Utilites;
 using CompanySystem.Presentation.ViewModels.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +16,7 @@ namespace CompanySystem.Presentation.Controllers
         {
             _userManager = userManager;
             _signInManager = signInManager;
-        } 
+        }
         #endregion
 
         #region SignUp
@@ -75,13 +76,13 @@ namespace CompanySystem.Presentation.Controllers
 
             var user = await _userManager.FindByEmailAsync(model.Email);
 
-            if(user is { })
+            if (user is { })
             {
                 var flag = await _userManager.CheckPasswordAsync(user, model.Password);
-                
-                if(flag)
+
+                if (flag)
                 {
-                    var result = await _signInManager.PasswordSignInAsync(user,model.Password ,model.RememberMe , true);
+                    var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, true);
 
                     if (result.IsNotAllowed)
                         ModelState.AddModelError(string.Empty, "Your account isn't confirmed yet!!");
@@ -115,5 +116,36 @@ namespace CompanySystem.Presentation.Controllers
             return RedirectToAction(nameof(SignIn));
         }
         #endregion
+
+        #region ForgetPassword
+
+        [HttpGet]
+        public IActionResult ForgetPassword() => View();
+
+        [HttpPost]
+        public async Task<IActionResult> SendResetPasswordLink(ForgetPasswordViewModel viewModel)
+        {
+            if(ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(viewModel.Email);
+
+                if(user is { })
+                {
+                    //Send Email
+                    var email = new Email()
+                    {
+                        To = viewModel.Email,
+                        Subject = "Reset Password",
+                        Body = "Reset Password Link", // Lesa htt3ml
+                    };
+                }
+
+            }
+            ModelState.AddModelError(string.Empty, "Invalid Operation");
+            return View(nameof(ForgetPassword) ,viewModel);
+        }
+
+        #endregion
     }
 }
+
