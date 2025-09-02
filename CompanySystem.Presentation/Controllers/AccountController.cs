@@ -138,12 +138,18 @@ namespace CompanySystem.Presentation.Controllers
                         Subject = "Reset Password",
                         Body = "Reset Password Link", // Lesa htt3ml
                     };
-                }
 
+                    EmailSettings.SendEmail(email);
+                    return RedirectToAction("CheckYourInbox");
+                }
             }
             ModelState.AddModelError(string.Empty, "Invalid Operation");
             return View(nameof(ForgetPassword) ,viewModel);
         }
+
+        [HttpGet]
+
+        public IActionResult CheckYourInbox() => View();
 
         #endregion
     }
