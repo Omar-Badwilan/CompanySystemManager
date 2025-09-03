@@ -131,12 +131,17 @@ namespace CompanySystem.Presentation.Controllers
 
                 if(user is { })
                 {
+                    var Token = _userManager.GeneratePasswordResetTokenAsync(user);
+                    
+                    // BaseUrl/Account/ResetPassword?email=omar0000680@gmail.com&Token=
+                    var ResetPasswordLink = Url.Action("ResetPassword" ,"Account", new {email = viewModel.Email , Token} , Request.Scheme); 
+
                     //Send Email
                     var email = new Email()
                     {
                         To = viewModel.Email,
                         Subject = "Reset Password",
-                        Body = "Reset Password Link", // Lesa htt3ml
+                        Body = ResetPasswordLink, // Lesa htt3ml
                     };
 
                     EmailSettings.SendEmail(email);
@@ -148,8 +153,41 @@ namespace CompanySystem.Presentation.Controllers
         }
 
         [HttpGet]
-
         public IActionResult CheckYourInbox() => View();
+
+        [HttpGet]
+        public IActionResult ResetPassword(string email, string Token)
+        {
+            TempData["email"] = email;
+            TempData["token"] = Token;
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel viewModel)
+        {
+            if (!ModelState.IsValid) return View(viewModel);
+
+            string email = TempData["email"] as string ?? string.Empty;
+            string Token = TempData["Token"] as string ?? string.Empty;
+
+
+            var User = await _userManager.FindByEmailAsync(email);
+            if(User is not null)
+            {
+                var Result = await _userManager.ResetPasswordAsync(User, Token, viewModel.Password);
+
+                if (Result.Succeeded)
+                    return RedirectToAction(nameof(SignIn));
+                else
+                    foreach (var error in Result.Errors)
+                        ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(nameof(ResetPassword) , viewModel);
+
+        }
 
         #endregion
     }

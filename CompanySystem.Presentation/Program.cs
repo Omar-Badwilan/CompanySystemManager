@@ -58,7 +58,8 @@ namespace CompanySystem.Presentation
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromDays(5);
 
             })
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
             builder.Services.ConfigureApplicationCookie(options =>
             {
