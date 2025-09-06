@@ -1,9 +1,11 @@
 using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 using CompanySystem.Presentation.ViewModels.Common;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CompanySystem.Presentation.Controllers;
 
+[Authorize]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
