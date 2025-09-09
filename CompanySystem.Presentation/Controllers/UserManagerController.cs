@@ -109,7 +109,6 @@ namespace CompanySystem.Presentation.Controllers
                 LastName = user.LName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
-                Roles = await _userManager.GetRolesAsync(user)
             };
 
             return View(modelVM);
@@ -137,6 +136,7 @@ namespace CompanySystem.Presentation.Controllers
                 user.LName = userVM.LastName;
                 user.Email = userVM.Email;
                 user.PhoneNumber = userVM.PhoneNumber;
+
                 var result = await _userManager.UpdateAsync(user);
 
                 if (!result.Succeeded)
@@ -147,20 +147,6 @@ namespace CompanySystem.Presentation.Controllers
                     return View(userVM);
                 }
 
-                //  take new roles
-
-                var existingRoles = await _userManager.GetRolesAsync(user);
-                var newRoles = userVM.Roles ?? new List<string>();
-
-                // Remove old roles not in new list
-                var rolesToRemove = existingRoles.Except(newRoles);
-                if (rolesToRemove.Any())
-                    await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
-
-                // put only new roles and ignore multiple
-                var rolesToAdd = newRoles.Except(existingRoles);
-                if (rolesToAdd.Any())
-                    await _userManager.AddToRolesAsync(user, rolesToAdd);
 
                 return RedirectToAction(nameof(Index));
 

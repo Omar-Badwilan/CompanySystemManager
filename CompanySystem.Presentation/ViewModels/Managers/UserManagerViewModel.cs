@@ -20,7 +20,7 @@ namespace CompanySystem.Presentation.ViewModels.Managers
         [Phone]
         public string? PhoneNumber { get; set; }
 
-        public IList<string> Roles { get; set; }
+        public IList<string>? Roles { get; set; }
 
     }
 }
