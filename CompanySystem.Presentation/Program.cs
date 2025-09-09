@@ -71,24 +71,26 @@ namespace CompanySystem.Presentation
             });
 
 
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = "Identity.Application";
-                options.DefaultChallengeScheme = "Identity.Application";
-            })
-                .AddCookie("Admin",".AspNetCore.Admin" ,options =>
-                {
-                    options.LoginPath = "/Account/Login";
-                    options.AccessDeniedPath = "/Home/Error";
-                    options.ExpireTimeSpan = TimeSpan.FromDays(10);
-                    options.LogoutPath = "/Account/SignIn";
-                });
+            //builder.Services.AddAuthentication(options =>
+            //{
+            //    options.DefaultAuthenticateScheme = "Identity.Application";
+            //    options.DefaultChallengeScheme = "Identity.Application";
+            //})
+            //    .AddCookie("Admin",".AspNetCore.Admin" ,options =>
+            //    {
+            //        options.LoginPath = "/Account/Login";
+            //        options.AccessDeniedPath = "/Home/Error";
+            //        options.ExpireTimeSpan = TimeSpan.FromDays(10);
+            //        options.LogoutPath = "/Account/SignIn";
+            //    });
 
 
             #endregion
 
             var app = builder.Build();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
             #region Configure the HTTP request pipeline
             if (!app.Environment.IsDevelopment())
             {

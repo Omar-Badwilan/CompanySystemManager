@@ -22,25 +22,32 @@ document.addEventListener("DOMContentLoaded", () => {
 });*/
 
 document.addEventListener("DOMContentLoaded", () => {
-    const searchInput = document.getElementById("searchInp");
-    const employeesTable = document.getElementById("employeesTable");
+    const searchInputs = document.querySelectorAll(".search-input");
 
-    let timer;
-    searchInput.addEventListener("input", function () {
-        clearTimeout(timer);
+    searchInputs.forEach(searchInput => {
+        const tableId = searchInput.dataset.tableId;
+        const controller = searchInput.dataset.controller;
+        const dataTable = document.getElementById(tableId);
 
-        // add a small delay so it doesn’t fire on every keystroke instantly
-        timer = setTimeout(() => {
-            const searchValue = searchInput.value.trim();
+        if (!dataTable || !controller) return;
 
-            fetch(`/Employee/Index?search=${encodeURIComponent(searchValue)}`, {
-                headers: { "X-Requested-With": "XMLHttpRequest" }
-            })
-                .then(res => res.text())
-                .then(html => {
-                    employeesTable.innerHTML = html;
+        let timer;
+        searchInput.addEventListener("input", () => {
+            clearTimeout(timer);
+
+            timer = setTimeout(() => {
+                const searchValue = searchInput.value.trim();
+
+                fetch(`/${controller}/Index?search=${encodeURIComponent(searchValue)}`, {
+                    headers: { "X-Requested-With": "XMLHttpRequest" }
                 })
-                .catch(err => console.error(err));
-        }, 300); // wait 300ms after typing stops
+                    .then(res => res.text())
+                    .then(html => {
+                        dataTable.innerHTML = html;
+                    })
+                    .catch(err => console.error(err));
+            }, 300);
+        });
     });
 });
+
