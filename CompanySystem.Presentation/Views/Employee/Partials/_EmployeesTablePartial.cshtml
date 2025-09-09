@@ -30,7 +30,7 @@
                     <td>@Html.DisplayFor(X => employee.Salary)</td>
                     <td>@Html.DisplayFor(X => employee.IsActive)</td>
                     <td>@Html.DisplayFor(X => employee.Gender)</td>
-                    <partial name="_ButtonsPartial" model="@employee.Id" />
+                    <partial name="_ButtonsPartial" model="@employee.Id.ToString()" />
                 </tr>
 
 

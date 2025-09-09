@@ -1,0 +1,46 @@
+﻿@model CompanySystem.Presentation.ViewModels.Managers.UserManagerViewModel
+
+
+<h1>User Details</h1>
+<br />
+<br />
+
+<div class="tab-pane fade show active p-4 border" id="general" role="tabpanel" aria-labelledby="general-tab">
+    <div class="row">
+        <div class="form-group col-6 mb-4">
+            <label class="form-label" asp-for="Id"></label>
+            <input asp-for="Id" class="form-control" readonly />
+        </div>
+        <div class="form-group col-6 mb-4">
+            <label class="form-label" asp-for="FirstName"></label>
+            <input asp-for="FirstName" class="form-control" readonly />
+        </div>
+        <div class="form-group col-6 mb-4">
+            <label class="form-label" asp-for="LastName"></label>
+            <input asp-for="LastName" class="form-control" readonly />
+        </div>
+        <div class="form-group col-6 mb-4">
+            <label class="form-label" asp-for="Email"></label>
+            <input asp-for="Email" class="form-control" readonly />
+        </div>
+        <div class="form-group col-6 mb-4">
+            <label class="form-label" asp-for="PhoneNumber"></label>
+            <input asp-for="PhoneNumber" class="form-control" readonly />
+        </div>
+        <div class="form-group col-12 mb-4">
+            <label class="form-label">Roles</label>
+            <ul class="list-group">
+                @foreach (var role in Model.Roles)
+                {
+                    <li class="list-group-item">@role</li>
+                }
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="mt-2 text-start">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success">Edit</a>
+        <a asp-action="Index" class="btn btn-outline-dark">Back To list</a>
+    </div>
+</div>

@@ -2,6 +2,7 @@
 using CompanySystem.Presentation.ViewModels.Managers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace CompanySystem.Presentation.Controllers
@@ -12,24 +13,33 @@ namespace CompanySystem.Presentation.Controllers
         #region Services
 
         private readonly UserManager<ApplicationUser> _userManager;
-        public UserManagerController(UserManager<ApplicationUser> userManager)
+        private readonly ILogger<UserManagerController> _logger;
+
+        public UserManagerController(UserManager<ApplicationUser> userManager
+            , ILogger<UserManagerController> logger)
         {
             _userManager = userManager;
+            _logger = logger;
         }
 
         #endregion
 
-
+        #region Index
         public async Task<IActionResult> Index(string search)
         {
             var query = _userManager.Users.AsQueryable();
 
             if (!string.IsNullOrEmpty(search))
-                query = query.Where(u => u.UserName.Contains(search) ||
-                                                   u.FName.Contains(search) ||
-                                                   u.LName.Contains(search));
+            {
+                var searchUpper = search.ToUpper();
+                query = query.Where(u => u.UserName.ToUpper().Contains(searchUpper) ||
+                                       u.FName.ToUpper().Contains(searchUpper) ||
+                                       u.LName.ToUpper().Contains(searchUpper));
+            }
 
-            var users = await Task.WhenAll(query.ToList().Select(async user => new UserManagerViewModel
+            var userList = await query.ToListAsync(); // Fix: Use async
+
+            var users = await Task.WhenAll(userList.Select(async user => new UserManagerViewModel
             {
                 Id = user.Id,
                 FirstName = user.FName,
@@ -39,12 +49,42 @@ namespace CompanySystem.Presentation.Controllers
                 Roles = await _userManager.GetRolesAsync(user)
             }));
 
-            // AJAX request → return only the partial
-            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-                return PartialView("Partials/_UsersTablePartial", users);
-
-            // Full request → return whole view
-            return View(users);
+            return Request.Headers["X-Requested-With"] == "XMLHttpRequest"
+                ? PartialView("Partials/_UsersTablePartial", users)
+                : View(users);
         }
+        #endregion
+
+        #region Details
+        [HttpGet]
+
+        public async Task<IActionResult> Details(string id)
+        {
+            if (id is null)
+                return BadRequest();
+            var user = await _userManager.FindByIdAsync(id);
+
+            if(user is null)
+                return NotFound();
+
+            // Map ApplicationUser to UserManagerViewModel
+            var model = new UserManagerViewModel
+            {
+                Id = user.Id,
+                FirstName = user.FName,   
+                LastName = user.LName,    
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Roles = await _userManager.GetRolesAsync(user)
+            };
+
+            return View(model);
+
+        }
+
+
+
+        #endregion
+
     }
 }
