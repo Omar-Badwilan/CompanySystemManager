@@ -40,17 +40,26 @@ namespace CompanySystem.Presentation.Controllers
                                        u.LName.ToUpper().Contains(searchUpper));
             }
 
-            var userList = await query.ToListAsync(); // Fix: Use async
+            // Execute the query and get the list of users
 
-            var users = await Task.WhenAll(userList.Select(async user => new UserManagerViewModel
+            var userList = await query.ToListAsync();
+
+
+            // Map users to ViewModel sequentially to avoid concurrency issues
+            var users = new List<UserManagerViewModel>();
+            foreach (var user in userList)
             {
-                Id = user.Id,
-                FirstName = user.FName,
-                LastName = user.LName,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                Roles = await _userManager.GetRolesAsync(user)
-            }));
+                var roles = await _userManager.GetRolesAsync(user); // await each call sequentially
+                users.Add(new UserManagerViewModel
+                {
+                    Id = user.Id,
+                    FirstName = user.FName,
+                    LastName = user.LName,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    Roles = roles
+                });
+            }
 
             return Request.Headers["X-Requested-With"] == "XMLHttpRequest"
                 ? PartialView("Partials/_UsersTablePartial", users)
