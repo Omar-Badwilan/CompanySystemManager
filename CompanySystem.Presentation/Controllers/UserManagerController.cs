@@ -14,12 +14,15 @@ namespace CompanySystem.Presentation.Controllers
 
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<UserManagerController> _logger;
+        private readonly IWebHostEnvironment _environment;
 
         public UserManagerController(UserManager<ApplicationUser> userManager
-            , ILogger<UserManagerController> logger)
+            , ILogger<UserManagerController> logger
+            , IWebHostEnvironment environment)
         {
             _userManager = userManager;
             _logger = logger;
+            _environment = environment;
         }
 
         #endregion
@@ -68,7 +71,7 @@ namespace CompanySystem.Presentation.Controllers
                 return NotFound();
 
             // Map ApplicationUser to UserManagerViewModel
-            var model = new UserManagerViewModel
+            var modelVM = new UserManagerViewModel
             {
                 Id = user.Id,
                 FirstName = user.FName,   
@@ -78,11 +81,97 @@ namespace CompanySystem.Presentation.Controllers
                 Roles = await _userManager.GetRolesAsync(user)
             };
 
-            return View(model);
+            return View(modelVM);
 
         }
 
 
+
+        #endregion
+
+        #region Update
+        [HttpGet]
+        public async Task<IActionResult> Edit(string? id)
+        {
+            if (id is null)
+                return BadRequest();
+
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user is null)
+                return NotFound();
+
+            // Map ApplicationUser to UserManagerViewModel
+            var modelVM = new UserManagerViewModel
+            {
+                Id = user.Id,
+                FirstName = user.FName,
+                LastName = user.LName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Roles = await _userManager.GetRolesAsync(user)
+            };
+
+            return View(modelVM);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit([FromRoute] string id, UserManagerViewModel userVM)
+        {
+            if (id != userVM.Id)
+                return BadRequest();
+
+            if (!ModelState.IsValid)
+                return View(userVM);
+
+
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user is null)
+                return NotFound();
+
+            try
+            {
+                user.FName = userVM.FirstName;
+                user.LName = userVM.LastName;
+                user.Email = userVM.Email;
+                user.PhoneNumber = userVM.PhoneNumber;
+                var result = await _userManager.UpdateAsync(user);
+
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                        ModelState.AddModelError("", error.Description);
+
+                    return View(userVM);
+                }
+
+                //  take new roles
+
+                var existingRoles = await _userManager.GetRolesAsync(user);
+                var newRoles = userVM.Roles ?? new List<string>();
+
+                // Remove old roles not in new list
+                var rolesToRemove = existingRoles.Except(newRoles);
+                if (rolesToRemove.Any())
+                    await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
+
+                // put only new roles and ignore multiple
+                var rolesToAdd = newRoles.Except(existingRoles);
+                if (rolesToAdd.Any())
+                    await _userManager.AddToRolesAsync(user, rolesToAdd);
+
+                return RedirectToAction(nameof(Index));
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating user {UserId}", id);
+                ModelState.AddModelError("", "Unexpected error while updating the user.");
+                return View(userVM);          
+            }
+        }
 
         #endregion
 
