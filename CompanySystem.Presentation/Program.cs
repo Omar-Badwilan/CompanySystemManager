@@ -52,10 +52,7 @@ namespace CompanySystem.Presentation
 
                 options.User.RequireUniqueEmail = true;
 
-
                 options.Lockout.AllowedForNewUsers = true;
-                options.Lockout.MaxFailedAccessAttempts = 5;
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromDays(5);
 
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -89,8 +86,6 @@ namespace CompanySystem.Presentation
 
             var app = builder.Build();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
             #region Configure the HTTP request pipeline
             if (!app.Environment.IsDevelopment())
             {
