@@ -1,5 +1,5 @@
-﻿using CompanySystem.DataAccessLayer.Models.Identity;
-using CompanySystem.Presentation.ViewModels.Managers;
+﻿using CompanySystem.BusinessLogic.DTOS.Departments;
+using CompanySystem.Presentation.ViewModels.Departments;
 using CompanySystem.Presentation.ViewModels.Managers.Roles;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -79,6 +79,57 @@ namespace CompanySystem.Presentation.Controllers
             return View(modelVM);
 
         }
+
+        #endregion
+
+        #region Create
+        [HttpGet] 
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(RolesManagerViewModel rolesVM)
+        {
+            if (!ModelState.IsValid)
+                return View(rolesVM); // if there is error it returns the same view with the model state errors
+
+            try
+            {
+
+                var createdRole = new IdentityRole()
+                {
+                    //Id is created Automatically
+                    Name = rolesVM.RoleName,
+                };
+
+                var result = await _roleManager.CreateAsync(createdRole);
+                if (result.Succeeded)
+                {
+                    // Now Id is generated
+                    TempData["Message"] = "Role Is Created";
+
+                    return RedirectToAction("Index");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                var message = _environment.IsDevelopment() ? ex.Message : "Role couldn't be Created";
+                ModelState.AddModelError(string.Empty, message);
+            }
+            return View(rolesVM);
+
+        }
+
 
         #endregion
     }
