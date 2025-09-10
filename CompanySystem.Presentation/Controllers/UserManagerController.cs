@@ -147,24 +147,23 @@ namespace CompanySystem.Presentation.Controllers
 
                 var result = await _userManager.UpdateAsync(user);
 
-                if (!result.Succeeded)
+                if (result.Succeeded)
                 {
-                    foreach (var error in result.Errors)
-                        ModelState.AddModelError("", error.Description);
 
-                    return View(userVM);
+                    TempData["Message"] = "User Is Updated";
+
+                    return RedirectToAction("Index");
+
                 }
-
-
-                return RedirectToAction(nameof(Index));
-
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError("", error.Description);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error updating user {UserId}", id);
                 ModelState.AddModelError("", "Unexpected error while updating the user.");
-                return View(userVM);
             }
+            return View(userVM);
         }
 
         #endregion
@@ -214,7 +213,7 @@ namespace CompanySystem.Presentation.Controllers
                 }
 
                 var roles = await _userManager.GetRolesAsync(user);
-                if(roles.Contains("Admin"))
+                if (roles.Contains("Admin"))
                 {
                     TempData["Error"] = "Admin users cannot be deleted!";
                     return RedirectToAction(nameof(Index));

@@ -1,5 +1,6 @@
 ﻿using CompanySystem.BusinessLogic.DTOS.Departments;
 using CompanySystem.Presentation.ViewModels.Departments;
+using CompanySystem.Presentation.ViewModels.Managers;
 using CompanySystem.Presentation.ViewModels.Managers.Roles;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -43,7 +44,7 @@ namespace CompanySystem.Presentation.Controllers
             // Execute the query and get the list of roles
             var roleList = await query.ToListAsync();
 
-            var roles = roleList.Select(r => new RolesManagerViewModel
+           var roles = roleList.Select(r => new RolesManagerViewModel
             {
                 Id = r.Id,
                 RoleName = r.Name
@@ -64,7 +65,7 @@ namespace CompanySystem.Presentation.Controllers
         {
             if (id is null)
                 return BadRequest();
-            var user = await  _roleManager.FindByIdAsync(id);
+            var user = await _roleManager.FindByIdAsync(id);
 
             if (user is null)
                 return NotFound();
@@ -83,7 +84,7 @@ namespace CompanySystem.Presentation.Controllers
         #endregion
 
         #region Create
-        [HttpGet] 
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
@@ -130,6 +131,78 @@ namespace CompanySystem.Presentation.Controllers
 
         }
 
+
+        #endregion
+
+        #region Update
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(string? id)
+        {
+            if (id is null)
+                return BadRequest();
+
+            var user = await _roleManager.FindByIdAsync(id);
+
+            if (user is null)
+                return NotFound();
+
+            var modelVM = new RolesManagerViewModel
+            {
+                //Id is created Automatically
+                Id = user.Id,
+                RoleName = user.Name,
+            };
+
+            return View(modelVM);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit([FromRoute] string id, RolesManagerViewModel rolesVM)
+        {
+
+            if (id != rolesVM.Id)
+                return BadRequest();
+
+            if (!ModelState.IsValid)
+                return View(rolesVM); // if there is error it returns the same view with the model state errors
+
+            var role = await _roleManager.FindByIdAsync(id);
+
+            if (role is null)
+                return NotFound();
+
+            try
+            {
+                role.Name = rolesVM.RoleName;
+                
+
+                var result = await _roleManager.UpdateAsync(role);
+
+                if (result.Succeeded)
+                {
+                    // Now Id is generated
+                    TempData["Message"] = "Role Is Updated";
+
+                    return RedirectToAction("Index");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                var message = _environment.IsDevelopment() ? ex.Message : "Role couldn't be Updated";
+                ModelState.AddModelError(string.Empty, message);
+            }
+            return View(rolesVM);
+
+        }
 
         #endregion
     }
