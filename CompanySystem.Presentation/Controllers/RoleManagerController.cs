@@ -43,14 +43,13 @@ namespace CompanySystem.Presentation.Controllers
             }
 
             // Execute the query and get the list of roles
-            var roleList = await query.ToListAsync();
-
-            var roles = roleList.Select(r => new RolesManagerViewModel
-            {
-                Id = r.Id,
-                RoleName = r.Name
-            }).ToList();
-
+            var roles = await query
+                .Select(r => new RolesManagerViewModel
+                {
+                    Id = r.Id,
+                    RoleName = r.Name
+                })
+                .ToListAsync();
 
             return Request.Headers["X-Requested-With"] == "XMLHttpRequest"
      ? PartialView("Partials/_RolesTablePartial", roles)
@@ -66,16 +65,17 @@ namespace CompanySystem.Presentation.Controllers
         {
             if (id is null)
                 return BadRequest();
-            var user = await _roleManager.FindByIdAsync(id);
 
-            if (user is null)
+            var role = await _roleManager.FindByIdAsync(id);
+
+            if (role is null)
                 return NotFound();
 
             // Map IdentityRole to RoleManagerView
             var modelVM = new RolesManagerViewModel
             {
-                Id = user.Id,
-                RoleName = user.Name,
+                Id = role.Id,
+                RoleName = role.Name,
             };
 
             return View(modelVM);
@@ -184,7 +184,7 @@ namespace CompanySystem.Presentation.Controllers
                 if (result.Succeeded)
                 {
                     // Now Id is generated
-                    TempData["Message"] = $"Role : ({role.Name}) is  Updated";
+                    TempData["Message"] = $"Role ({role.Name}) has been updated successfully.";
 
                     return RedirectToAction("Index");
                 }
@@ -230,49 +230,52 @@ namespace CompanySystem.Presentation.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-
         public async Task<IActionResult> DeleteConfirmed(string id)
-
         {
-            var message = string.Empty;
+            if (string.IsNullOrEmpty(id))
+                return BadRequest();
+
+            var role = await _roleManager.FindByIdAsync(id);
+            if (role is null)
+                return NotFound();
 
             try
             {
-                var role = await _roleManager.FindByIdAsync(id);
-
-                if (role is null)
-                {
-                    TempData["Error"] = "Role not found.";
-                    return RedirectToAction(nameof(Index));
-                }
-
                 var result = await _roleManager.DeleteAsync(role);
 
                 if (result.Succeeded)
                 {
-                    TempData["Message"] = $"Role : ({role.Name}) has been deleted successfully.";
+                    TempData["Message"] = $"Role ({role.Name}) has been deleted successfully.";
                     return RedirectToAction(nameof(Index));
                 }
 
-                message = "Role couldn't be deleted: " +
-                          string.Join(", ", result.Errors.Select(e => e.Description));
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error deleting role {RoleId}", id);
-                message = _environment.IsDevelopment()
+                var message = _environment.IsDevelopment()
                     ? ex.Message
-                    : "Role couldn't be deleted.";
+                    : "Unexpected error while deleting the role.";
+                ModelState.AddModelError(string.Empty, message);
             }
 
-            TempData["Error"] = message;
-            return RedirectToAction(nameof(Index));
+            // reload VM and return view if failed
+            var modelVM = new RolesManagerViewModel
+            {
+                Id = role.Id,
+                RoleName = role.Name
+            };
+            return View("Delete", modelVM);
         }
 
+
+
+
+
+        #endregion
     }
-
-
-    #endregion
 
 }
 

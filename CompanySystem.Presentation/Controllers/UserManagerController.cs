@@ -3,6 +3,7 @@ using CompanySystem.Presentation.ViewModels.Managers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.Threading.Tasks;
 
 namespace CompanySystem.Presentation.Controllers
@@ -149,8 +150,7 @@ namespace CompanySystem.Presentation.Controllers
 
                 if (result.Succeeded)
                 {
-
-                    TempData["Message"] = $"User {user.FName} Is Updated";
+                    TempData["Message"] = $"User ({user.FName}) has been updated successfully.";
 
                     return RedirectToAction("Index");
 
@@ -196,50 +196,70 @@ namespace CompanySystem.Presentation.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-
         public async Task<IActionResult> DeleteConfirmed(string id)
-
         {
-            var message = string.Empty;
+            if (string.IsNullOrEmpty(id))
+                return BadRequest();
+
+            var user = await _userManager.FindByIdAsync(id);
+            if (user is null)
+                return NotFound();
 
             try
             {
-                var user = await _userManager.FindByIdAsync(id);
-
-                if (user is null)
-                {
-                    TempData["Error"] = "User isn't Found";
-                    return RedirectToAction(nameof(Index));
-                }
-
                 var roles = await _userManager.GetRolesAsync(user);
                 if (roles.Contains("Admin"))
                 {
-                    TempData["Error"] = "Admin users cannot be deleted!";
-                    return RedirectToAction(nameof(Index));
+                    ModelState.AddModelError(string.Empty, "Admin users cannot be deleted.");
+                    return View("Delete", new UserManagerViewModel
+                    {
+                        Id = user.Id,
+                        FirstName = user.FName,
+                        LastName = user.LName,
+                        Email = user.Email,
+                        PhoneNumber = user.PhoneNumber,
+                        Roles = roles
+                    });
                 }
 
                 var result = await _userManager.DeleteAsync(user);
+
                 if (result.Succeeded)
                 {
-                    TempData["Message"] = $"User ({user.FName}) is Deleted";
+                    TempData["Message"] = $"User ({user.FName}) has been deleted successfully.";
                     return RedirectToAction(nameof(Index));
                 }
-                message = "User couldn't be Deleted: " + string.Join(", ", result.Errors.Select(e => e.Description));
+
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error deleting user {UserId}", id);
-                message = _environment.IsDevelopment() ? ex.Message : "User couldn't be deleted";
+                var message = _environment.IsDevelopment()
+                    ? ex.Message
+                    : "Unexpected error while deleting the user.";
+                ModelState.AddModelError(string.Empty, message);
             }
 
-            TempData["Error"] = message;
-            return RedirectToAction(nameof(Index));
+            // reload VM and return view if failed
+            var modelVM = new UserManagerViewModel
+            {
+                Id = user.Id,
+                FirstName = user.FName,
+                LastName = user.LName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Roles = await _userManager.GetRolesAsync(user)
+            };
+            return View("Delete", modelVM);
         }
 
+
+
+
+
+        #endregion
     }
-
-
-    #endregion
 
 }
