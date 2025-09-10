@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using CompanySystem.BusinessLogic.DTOS.Departments;
 using CompanySystem.BusinessLogic.Services.Departments;
+using CompanySystem.DataAccessLayer.Models.Employees;
 using CompanySystem.Presentation.ViewModels.Departments;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace CompanySystem.Presentation.Controllers
 {
@@ -22,9 +24,21 @@ namespace CompanySystem.Presentation.Controllers
 
         #region Index
         [HttpGet]//GET: /Department/Index   
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search)
         {
             var departments = await _departmentService.GetAllDepartmentsAsync();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                var searchUpper = search.ToUpper();
+
+                departments = departments.Where(d => d.Name.ToUpper().Contains(searchUpper));
+            }
+
+            // Check if it's an AJAX request
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                // Return only the partial view for AJAX
+                return PartialView("Partials/_DepartmentsTablePartial", departments);
             return View(departments);
         }
         #endregion
