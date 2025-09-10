@@ -1,0 +1,13 @@
+﻿@model RolesManagerViewModel
+
+@{
+    ViewData["Title"] = "Details";
+    ViewData["Id"] = Model.Id;
+}
+
+<h1>Role Details</h1>
+<br />
+<br />
+
+<!-- Delete- Details Role partial -->
+<partial name="Partials/DetailsDeleteRolePartial" model="Model" />

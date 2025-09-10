@@ -69,7 +69,6 @@ namespace CompanySystem.Presentation.Controllers
 
         #region Details
         [HttpGet]
-
         public async Task<IActionResult> Details(string id)
         {
             if (id is null)

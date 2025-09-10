@@ -1,4 +1,5 @@
 ﻿using CompanySystem.DataAccessLayer.Models.Identity;
+using CompanySystem.Presentation.ViewModels.Managers;
 using CompanySystem.Presentation.ViewModels.Managers.Roles;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -52,6 +53,30 @@ namespace CompanySystem.Presentation.Controllers
             return Request.Headers["X-Requested-With"] == "XMLHttpRequest"
      ? PartialView("Partials/_RolesTablePartial", roles)
      : View(roles);
+
+        }
+
+        #endregion
+
+        #region Details
+        [HttpGet]
+        public async Task<IActionResult> Details(string id)
+        {
+            if (id is null)
+                return BadRequest();
+            var user = await  _roleManager.FindByIdAsync(id);
+
+            if (user is null)
+                return NotFound();
+
+            // Map IdentityRole to RoleManagerView
+            var modelVM = new RolesManagerViewModel
+            {
+                Id = user.Id,
+                RoleName = user.Name,
+            };
+
+            return View(modelVM);
 
         }
 
