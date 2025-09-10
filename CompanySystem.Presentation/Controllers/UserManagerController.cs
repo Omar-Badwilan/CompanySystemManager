@@ -150,7 +150,7 @@ namespace CompanySystem.Presentation.Controllers
                 if (result.Succeeded)
                 {
 
-                    TempData["Message"] = "User Is Updated";
+                    TempData["Message"] = $"User {user.FName} Is Updated";
 
                     return RedirectToAction("Index");
 
@@ -194,7 +194,7 @@ namespace CompanySystem.Presentation.Controllers
             return View(model);
         }
 
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
 
         public async Task<IActionResult> DeleteConfirmed(string id)
@@ -222,7 +222,7 @@ namespace CompanySystem.Presentation.Controllers
                 var result = await _userManager.DeleteAsync(user);
                 if (result.Succeeded)
                 {
-                    TempData["Message"] = "User is Deleted";
+                    TempData["Message"] = $"User ({user.FName}) is Deleted";
                     return RedirectToAction(nameof(Index));
                 }
                 message = "User couldn't be Deleted: " + string.Join(", ", result.Errors.Select(e => e.Description));

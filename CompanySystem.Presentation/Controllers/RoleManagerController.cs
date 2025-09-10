@@ -5,6 +5,7 @@ using CompanySystem.Presentation.ViewModels.Managers.Roles;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace CompanySystem.Presentation.Controllers
 {
@@ -44,7 +45,7 @@ namespace CompanySystem.Presentation.Controllers
             // Execute the query and get the list of roles
             var roleList = await query.ToListAsync();
 
-           var roles = roleList.Select(r => new RolesManagerViewModel
+            var roles = roleList.Select(r => new RolesManagerViewModel
             {
                 Id = r.Id,
                 RoleName = r.Name
@@ -110,7 +111,7 @@ namespace CompanySystem.Presentation.Controllers
                 if (result.Succeeded)
                 {
                     // Now Id is generated
-                    TempData["Message"] = "Role Is Created";
+                    TempData["Message"] = $"Role : ({createdRole.Name}) Created";
 
                     return RedirectToAction("Index");
                 }
@@ -176,14 +177,14 @@ namespace CompanySystem.Presentation.Controllers
             try
             {
                 role.Name = rolesVM.RoleName;
-                
+
 
                 var result = await _roleManager.UpdateAsync(role);
 
                 if (result.Succeeded)
                 {
                     // Now Id is generated
-                    TempData["Message"] = "Role Is Updated";
+                    TempData["Message"] = $"Role : ({role.Name}) is  Updated";
 
                     return RedirectToAction("Index");
                 }
@@ -205,5 +206,73 @@ namespace CompanySystem.Presentation.Controllers
         }
 
         #endregion
+
+        #region Delete
+        [HttpGet]
+        public async Task<IActionResult> Delete(string? id)
+        {
+            if (id is null)
+                return BadRequest();
+
+            var user = await _roleManager.FindByIdAsync(id);
+
+            if (user is null)
+                return NotFound();
+
+            var modelVM = new RolesManagerViewModel
+            {
+                Id = user.Id,
+                RoleName = user.Name,
+            };
+
+            return View(modelVM);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+
+        public async Task<IActionResult> DeleteConfirmed(string id)
+
+        {
+            var message = string.Empty;
+
+            try
+            {
+                var role = await _roleManager.FindByIdAsync(id);
+
+                if (role is null)
+                {
+                    TempData["Error"] = "Role not found.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                var result = await _roleManager.DeleteAsync(role);
+
+                if (result.Succeeded)
+                {
+                    TempData["Message"] = $"Role : ({role.Name}) has been deleted successfully.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                message = "Role couldn't be deleted: " +
+                          string.Join(", ", result.Errors.Select(e => e.Description));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting role {RoleId}", id);
+                message = _environment.IsDevelopment()
+                    ? ex.Message
+                    : "Role couldn't be deleted.";
+            }
+
+            TempData["Error"] = message;
+            return RedirectToAction(nameof(Index));
+        }
+
     }
+
+
+    #endregion
+
 }
+
