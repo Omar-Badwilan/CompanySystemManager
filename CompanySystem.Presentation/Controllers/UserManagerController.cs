@@ -76,15 +76,15 @@ namespace CompanySystem.Presentation.Controllers
                 return BadRequest();
             var user = await _userManager.FindByIdAsync(id);
 
-            if(user is null)
+            if (user is null)
                 return NotFound();
 
             // Map ApplicationUser to UserManagerViewModel
             var modelVM = new UserManagerViewModel
             {
                 Id = user.Id,
-                FirstName = user.FName,   
-                LastName = user.LName,    
+                FirstName = user.FName,
+                LastName = user.LName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 Roles = await _userManager.GetRolesAsync(user)
@@ -164,11 +164,84 @@ namespace CompanySystem.Presentation.Controllers
             {
                 _logger.LogError(ex, "Error updating user {UserId}", id);
                 ModelState.AddModelError("", "Unexpected error while updating the user.");
-                return View(userVM);          
+                return View(userVM);
             }
         }
 
         #endregion
 
+        #region Delete
+        [HttpGet]
+        public async Task<IActionResult> Delete(string? id)
+        {
+            if (id is null)
+                return BadRequest();
+
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user is null)
+                return NotFound();
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var model = new UserManagerViewModel
+            {
+                Id = user.Id,
+                FirstName = user.FName,
+                LastName = user.LName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Roles = roles
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+
+        public async Task<IActionResult> DeleteConfirmed(string id)
+
+        {
+            var message = string.Empty;
+
+            try
+            {
+                var user = await _userManager.FindByIdAsync(id);
+
+                if (user is null)
+                {
+                    TempData["Error"] = "User isn't Found";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                var roles = await _userManager.GetRolesAsync(user);
+                if(roles.Contains("Admin"))
+                {
+                    TempData["Error"] = "Admin users cannot be deleted!";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                var result = await _userManager.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+                    TempData["Message"] = "User is Deleted";
+                    return RedirectToAction(nameof(Index));
+                }
+                message = "User couldn't be Deleted: " + string.Join(", ", result.Errors.Select(e => e.Description));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting user {UserId}", id);
+                message = _environment.IsDevelopment() ? ex.Message : "User couldn't be deleted";
+            }
+
+            TempData["Error"] = message;
+            return RedirectToAction(nameof(Index));
+        }
+
     }
+
+
+    #endregion
+
 }
