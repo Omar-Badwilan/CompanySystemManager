@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!dataTable || !controller) return;
 
         let timer;
+        let abortController;
         searchInput.addEventListener("input", () => {
             clearTimeout(timer);
 
@@ -46,7 +47,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         dataTable.innerHTML = html;
                     })
                     .catch(err => console.error(err));
-            }, 300);
+            },
+                300);
         });
     });
 });
