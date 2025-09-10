@@ -2,6 +2,7 @@
 using CompanySystem.Presentation.ViewModels.Managers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Threading.Tasks;
@@ -14,14 +15,18 @@ namespace CompanySystem.Presentation.Controllers
         #region Services
 
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<UserManagerController> _logger;
         private readonly IWebHostEnvironment _environment;
 
-        public UserManagerController(UserManager<ApplicationUser> userManager
-            , ILogger<UserManagerController> logger
-            , IWebHostEnvironment environment)
+        public UserManagerController(
+            UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager,
+             ILogger<UserManagerController> logger,
+             IWebHostEnvironment environment)
         {
             _userManager = userManager;
+            _roleManager = roleManager; 
             _logger = logger;
             _environment = environment;
         }
@@ -79,6 +84,8 @@ namespace CompanySystem.Presentation.Controllers
             if (user is null)
                 return NotFound();
 
+            var userRoles = await _userManager.GetRolesAsync(user);
+
             // Map ApplicationUser to UserManagerViewModel
             var modelVM = new UserManagerViewModel
             {
@@ -87,7 +94,7 @@ namespace CompanySystem.Presentation.Controllers
                 LastName = user.LName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
-                Roles = await _userManager.GetRolesAsync(user)
+                SelectedRoles = userRoles.ToList()
             };
 
             return View(modelVM);
@@ -110,6 +117,19 @@ namespace CompanySystem.Presentation.Controllers
             if (user is null)
                 return NotFound();
 
+
+            #region get User Roles
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var allRoles = _roleManager.Roles
+                .Select(r => new SelectListItem
+                {
+                    Value = r.Name,
+                    Text = r.Name,
+                    Selected = userRoles.Contains(r.Name)
+                })
+                .ToList(); 
+            #endregion
+
             // Map ApplicationUser to UserManagerViewModel
             var modelVM = new UserManagerViewModel
             {
@@ -118,6 +138,8 @@ namespace CompanySystem.Presentation.Controllers
                 LastName = user.LName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
+                AllRoles = allRoles,                 //  pass all roles
+                SelectedRoles = userRoles.ToList()   //  pass selected roles
             };
 
             return View(modelVM);
@@ -150,6 +172,17 @@ namespace CompanySystem.Presentation.Controllers
 
                 if (result.Succeeded)
                 {
+                    //  Update roles
+                    var currentRoles = await _userManager.GetRolesAsync(user);
+                    var rolesToAdd = userVM.SelectedRoles.Except(currentRoles).ToList();
+                    var rolesToRemove = currentRoles.Except(userVM.SelectedRoles).ToList();
+
+                    if (rolesToAdd.Any())
+                        await _userManager.AddToRolesAsync(user, rolesToAdd);
+
+                    if (rolesToRemove.Any())
+                        await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
+
                     TempData["Message"] = $"User ({user.FName}) has been updated successfully.";
 
                     return RedirectToAction("Index");
@@ -180,7 +213,7 @@ namespace CompanySystem.Presentation.Controllers
             if (user is null)
                 return NotFound();
 
-            var roles = await _userManager.GetRolesAsync(user);
+            var userRoles = await _userManager.GetRolesAsync(user);
 
             var model = new UserManagerViewModel
             {
@@ -189,7 +222,7 @@ namespace CompanySystem.Presentation.Controllers
                 LastName = user.LName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
-                Roles = roles
+                SelectedRoles = userRoles.ToList()
             };
             return View(model);
         }

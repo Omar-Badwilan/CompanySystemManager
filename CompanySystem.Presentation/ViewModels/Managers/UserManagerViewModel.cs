@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace CompanySystem.Presentation.ViewModels.Managers
 {
@@ -20,7 +21,14 @@ namespace CompanySystem.Presentation.ViewModels.Managers
         [Phone]
         public string? PhoneNumber { get; set; }
 
-        public IList<string>? Roles { get; set; }
+        // Currently assigned roles
+        public IList<string> Roles { get; set; } = new List<string>();
+
+        // All roles available (to show in dropdown/checkboxes)
+        public List<SelectListItem> AllRoles { get; set; } = new List<SelectListItem>();
+
+        // Roles selected in edit form
+        public List<string> SelectedRoles { get; set; } = new List<string>();
 
     }
 }

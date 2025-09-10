@@ -26,9 +26,16 @@
         <div class="form-group col-12 mb-4">
             <label class="form-label">Roles</label>
             <ul class="list-group">
-                @foreach (var role in Model.Roles)
+                @if (Model.SelectedRoles != null && Model.SelectedRoles.Any())
                 {
-                    <li class="list-group-item">@role</li>
+                    @foreach (var role in Model.SelectedRoles)
+                    {
+                        <li class="list-group-item">@role</li>
+                    }
+                }
+                else
+                {
+                    <li class="list-group-item text-muted">No roles assigned</li>
                 }
             </ul>
         </div>
