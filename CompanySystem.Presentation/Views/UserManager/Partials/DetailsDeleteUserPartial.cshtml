@@ -23,9 +23,9 @@
             <label class="form-label" asp-for="PhoneNumber"></label>
             <input asp-for="PhoneNumber" class="form-control" readonly />
         </div>
-        <div class="form-group col-12 mb-4">
+        <div class="form-group col-12 mb-4 ">
             <label class="form-label">Roles</label>
-            <ul class="list-group">
+            <ul class="list-group" >
                 @if (Model.SelectedRoles != null && Model.SelectedRoles.Any())
                 {
                     @foreach (var role in Model.SelectedRoles)
@@ -35,7 +35,7 @@
                 }
                 else
                 {
-                    <li class="list-group-item text-muted">No roles assigned</li>
+                    <li class="list-group-item text-muted ">No roles assigned</li>
                 }
             </ul>
         </div>
