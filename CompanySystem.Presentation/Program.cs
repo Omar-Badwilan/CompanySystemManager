@@ -52,10 +52,7 @@ namespace CompanySystem.Presentation
 
                 options.User.RequireUniqueEmail = true;
 
-
                 options.Lockout.AllowedForNewUsers = true;
-                options.Lockout.MaxFailedAccessAttempts = 5;
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromDays(5);
 
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -71,18 +68,18 @@ namespace CompanySystem.Presentation
             });
 
 
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = "Identity.Application";
-                options.DefaultChallengeScheme = "Identity.Application";
-            })
-                .AddCookie("Admin",".AspNetCore.Admin" ,options =>
-                {
-                    options.LoginPath = "/Account/Login";
-                    options.AccessDeniedPath = "/Home/Error";
-                    options.ExpireTimeSpan = TimeSpan.FromDays(10);
-                    options.LogoutPath = "/Account/SignIn";
-                });
+            //builder.Services.AddAuthentication(options =>
+            //{
+            //    options.DefaultAuthenticateScheme = "Identity.Application";
+            //    options.DefaultChallengeScheme = "Identity.Application";
+            //})
+            //    .AddCookie("Admin",".AspNetCore.Admin" ,options =>
+            //    {
+            //        options.LoginPath = "/Account/Login";
+            //        options.AccessDeniedPath = "/Home/Error";
+            //        options.ExpireTimeSpan = TimeSpan.FromDays(10);
+            //        options.LogoutPath = "/Account/SignIn";
+            //    });
 
 
             #endregion

@@ -90,11 +90,6 @@ namespace CompanySystem.Presentation.Controllers
                     if (result.IsLockedOut)
                         ModelState.AddModelError(string.Empty, "Your account is locked!!");
 
-                    //if (result.RequiresTwoFactor)
-                    //{
-
-                    //}
-
                     if (result.Succeeded)
                         return RedirectToAction(nameof(HomeController.Index), "Home");
 
@@ -102,7 +97,7 @@ namespace CompanySystem.Presentation.Controllers
 
             }
 
-            ModelState.AddModelError(string.Empty, "Invalid Login Attempt.");
+            ModelState.AddModelError(string.Empty, "Invalid email or password.");
             return View(model);
         }
 

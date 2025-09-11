@@ -1,0 +1,13 @@
+﻿@model UserManagerViewModel
+
+@{
+    ViewData["Title"] = "Details";
+    ViewData["Id"] = Model.Id;
+}
+
+<h1>User Details</h1>
+<br />
+<br />
+
+<!-- Delete- Details User partial -->
+<partial name="Partials/DetailsDeleteUserPartial" model="Model" />

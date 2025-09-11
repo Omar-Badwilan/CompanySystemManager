@@ -23,9 +23,12 @@
         <div class="col-5">
             <label for="searchInp" class="form-label visually-hidden">Search Employee</label>
 
-            <input type="text" name="search" class="form-control" id="searchInp" 
+            <input type="text" name="search" class="form-control search-input" id="searchInp" 
             placeholder="Search By Name" 
-            value="@Context.Request.Query["search"]"/>
+            value="@Context.Request.Query["search"]"
+                   data-controller="Employee"
+                   data-table-id="employeesTable" 
+            />
         </div>
     </div>
 </form>

@@ -1,0 +1,281 @@
+﻿using CompanySystem.BusinessLogic.DTOS.Departments;
+using CompanySystem.Presentation.ViewModels.Departments;
+using CompanySystem.Presentation.ViewModels.Managers;
+using CompanySystem.Presentation.ViewModels.Managers.Roles;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Data;
+
+namespace CompanySystem.Presentation.Controllers
+{
+    public class RoleManagerController : Controller
+    {
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ILogger<RoleManagerController> _logger;
+        private readonly IWebHostEnvironment _environment;
+
+        #region Services
+        public RoleManagerController(RoleManager<IdentityRole> roleManager
+            , ILogger<RoleManagerController> logger
+            , IWebHostEnvironment environment)
+        {
+            _roleManager = roleManager;
+            _logger = logger;
+            _environment = environment;
+        }
+
+
+        #endregion
+
+        #region Index
+
+        [HttpGet]
+        public async Task<IActionResult> Index(string search)
+        {
+            var query = _roleManager.Roles.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                var searchUpper = search.ToUpper();
+
+                query = query.Where(r => r.Name.ToUpper().Contains(searchUpper));
+            }
+
+            // Execute the query and get the list of roles
+            var roles = await query
+                .Select(r => new RolesManagerViewModel
+                {
+                    Id = r.Id,
+                    RoleName = r.Name
+                })
+                .ToListAsync();
+
+            return Request.Headers["X-Requested-With"] == "XMLHttpRequest"
+     ? PartialView("Partials/_RolesTablePartial", roles)
+     : View(roles);
+
+        }
+
+        #endregion
+
+        #region Details
+        [HttpGet]
+        public async Task<IActionResult> Details(string id)
+        {
+            if (id is null)
+                return BadRequest();
+
+            var role = await _roleManager.FindByIdAsync(id);
+
+            if (role is null)
+                return NotFound();
+
+            // Map IdentityRole to RoleManagerView
+            var modelVM = new RolesManagerViewModel
+            {
+                Id = role.Id,
+                RoleName = role.Name,
+            };
+
+            return View(modelVM);
+
+        }
+
+        #endregion
+
+        #region Create
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(RolesManagerViewModel rolesVM)
+        {
+            if (!ModelState.IsValid)
+                return View(rolesVM); // if there is error it returns the same view with the model state errors
+
+            try
+            {
+
+                var createdRole = new IdentityRole()
+                {
+                    //Id is created Automatically
+                    Name = rolesVM.RoleName,
+                };
+
+                var result = await _roleManager.CreateAsync(createdRole);
+                if (result.Succeeded)
+                {
+                    // Now Id is generated
+                    TempData["Message"] = $"Role : ({createdRole.Name}) Created";
+
+                    return RedirectToAction("Index");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                var message = _environment.IsDevelopment() ? ex.Message : "Role couldn't be Created";
+                ModelState.AddModelError(string.Empty, message);
+            }
+            return View(rolesVM);
+
+        }
+
+
+        #endregion
+
+        #region Update
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(string? id)
+        {
+            if (id is null)
+                return BadRequest();
+
+            var user = await _roleManager.FindByIdAsync(id);
+
+            if (user is null)
+                return NotFound();
+
+            var modelVM = new RolesManagerViewModel
+            {
+                //Id is created Automatically
+                Id = user.Id,
+                RoleName = user.Name,
+            };
+
+            return View(modelVM);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit([FromRoute] string id, RolesManagerViewModel rolesVM)
+        {
+
+            if (id != rolesVM.Id)
+                return BadRequest();
+
+            if (!ModelState.IsValid)
+                return View(rolesVM); // if there is error it returns the same view with the model state errors
+
+            var role = await _roleManager.FindByIdAsync(id);
+
+            if (role is null)
+                return NotFound();
+
+            try
+            {
+                role.Name = rolesVM.RoleName;
+
+
+                var result = await _roleManager.UpdateAsync(role);
+
+                if (result.Succeeded)
+                {
+                    // Now Id is generated
+                    TempData["Message"] = $"Role ({role.Name}) has been updated successfully.";
+
+                    return RedirectToAction("Index");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                var message = _environment.IsDevelopment() ? ex.Message : "Role couldn't be Updated";
+                ModelState.AddModelError(string.Empty, message);
+            }
+            return View(rolesVM);
+
+        }
+
+        #endregion
+
+        #region Delete
+        [HttpGet]
+        public async Task<IActionResult> Delete(string? id)
+        {
+            if (id is null)
+                return BadRequest();
+
+            var user = await _roleManager.FindByIdAsync(id);
+
+            if (user is null)
+                return NotFound();
+
+            var modelVM = new RolesManagerViewModel
+            {
+                Id = user.Id,
+                RoleName = user.Name,
+            };
+
+            return View(modelVM);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return BadRequest();
+
+            var role = await _roleManager.FindByIdAsync(id);
+            if (role is null)
+                return NotFound();
+
+            try
+            {
+                var result = await _roleManager.DeleteAsync(role);
+
+                if (result.Succeeded)
+                {
+                    TempData["Message"] = $"Role ({role.Name}) has been deleted successfully.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting role {RoleId}", id);
+                var message = _environment.IsDevelopment()
+                    ? ex.Message
+                    : "Unexpected error while deleting the role.";
+                ModelState.AddModelError(string.Empty, message);
+            }
+
+            // reload VM and return view if failed
+            var modelVM = new RolesManagerViewModel
+            {
+                Id = role.Id,
+                RoleName = role.Name
+            };
+            return View("Delete", modelVM);
+        }
+
+
+
+
+
+        #endregion
+    }
+
+}
+

@@ -68,7 +68,7 @@ namespace CompanySystem.DataAccessLayer.Persistence.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", (string)null);
                 });
 
             modelBuilder.Entity("CompanySystem.DataAccessLayer.Models.Employees.Employee", b =>
@@ -139,7 +139,7 @@ namespace CompanySystem.DataAccessLayer.Persistence.Data.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("CompanySystem.DataAccessLayer.Models.Identity.ApplicationUser", b =>

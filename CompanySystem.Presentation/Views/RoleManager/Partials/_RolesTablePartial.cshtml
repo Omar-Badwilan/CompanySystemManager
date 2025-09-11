@@ -1,0 +1,33 @@
+﻿@model IEnumerable<RolesManagerViewModel>
+
+@if (Model.Any())
+{
+    <table id="rolesTable" class="table table-striped table-hover mt-4">
+        <thead class="text-center">
+            <tr>
+                <th>@Html.DisplayNameFor(u => u.First().Id)</th>
+                <th>@Html.DisplayNameFor(u => u.First().RoleName)</th>
+                <th>Details</th>
+                <th>Update</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody class="text-center">
+            @foreach (var role in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(x => role.Id)</td>
+                    <td>@Html.DisplayFor(x => role.RoleName)</td>
+                    <partial name="_ButtonsPartial" model="@role.Id" />
+                </tr>
+
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info mt-3">
+        <h3>There are No Roles :(</h3>
+    </div>
+}

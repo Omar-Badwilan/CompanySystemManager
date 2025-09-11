@@ -20,5 +20,7 @@ namespace CompanySystem.DataAccessLayer.Persistence.Data.Contexts
         public DbSet<Department> Departments { get; set; }
 
         public DbSet<Employee> Employees { get; set; }
+
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
     }
 }
