@@ -1,4 +1,4 @@
-namespace CompanySystem.Presentation.ViewModels
+namespace CompanySystem.Presentation.ViewModels.Common
 {
     public class ErrorViewModel
     {

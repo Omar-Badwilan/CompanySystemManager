@@ -1,0 +1,37 @@
+﻿@model IEnumerable<RolesManagerViewModel>
+
+@{
+    ViewData["Title"] = "Roles";
+}
+
+@* Notification when creation -deletion -updation*@
+<partial name="NotificationTriggerPartial" />
+
+
+<h1>Roles</h1>
+
+<br />
+<br />
+
+<a asp-controller="RoleManager" asp-action="Create" class="btn btn-primary">Add New Role</a>
+
+<br />
+
+
+
+
+
+<form asp-action="Index" id="searchForm" method="get" class="mt-5 row justify-content-center align-items-center">
+    <div class="row col-12">
+        <div class="col-5">
+            <label for="searchInp" class="form-label visually-hidden">Search Roles</label>
+
+            <input type="text" name="search" class="form-control search-input" id="searchInp"
+                   placeholder="Search By Role Name"
+                   value="@Context.Request.Query["search"]"
+                   data-controller="RoleManager"
+                   data-table-id="rolesTable" />
+        </div>
+    </div>
+</form>
+<partial name="Partials/_RolesTablePartial" />

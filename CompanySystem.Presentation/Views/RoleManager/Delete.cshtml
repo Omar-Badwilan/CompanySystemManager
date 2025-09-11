@@ -1,0 +1,11 @@
+﻿@model RolesManagerViewModel
+
+@{
+    ViewData["Title"] = "Delete Role";
+    ViewData["Id"] = Model.Id;
+}
+
+<h1>Are you sure u want to delete this User?</h1>
+<!-- Delete- Details User partial -->
+<partial name="Partials/DetailsDeleteRolePartial" model="Model" />
+

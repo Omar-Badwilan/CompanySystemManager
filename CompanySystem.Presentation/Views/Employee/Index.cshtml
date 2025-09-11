@@ -1,0 +1,36 @@
+﻿@model IEnumerable<EmployeeDto>
+@{
+    ViewData["Title"] = "Employees"; 
+}
+
+@* Notification when creation -deletion -updation*@
+ <partial name="NotificationTriggerPartial" />
+
+
+<h1>Employees</h1>
+
+<br />
+<br />
+
+<a asp-controller="Employee" asp-action="Create" class="btn btn-primary">Create New Employee</a>
+
+<br />
+
+
+<form asp-action="Index" id="searchForm" method="get" class="mt-5 row justify-content-center align-items-center">
+        
+    <div class="row col-12">
+        <div class="col-5">
+            <label for="searchInp" class="form-label visually-hidden">Search Employee</label>
+
+            <input type="text" name="search" class="form-control search-input" id="searchInp" 
+            placeholder="Search By Name" 
+            value="@Context.Request.Query["search"]"
+                   data-controller="Employee"
+                   data-table-id="employeesTable" 
+            />
+        </div>
+    </div>
+</form>
+
+<partial name="Partials/_EmployeesTablePartial" />
