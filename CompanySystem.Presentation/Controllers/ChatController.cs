@@ -35,7 +35,7 @@ public class ChatController : Controller
             .Trim();
         // 3️ Extract SQL
         var match = System.Text.RegularExpressions.Regex.Match(aiResponse,
-            @"\b(SELECT|INSERT|UPDATE|DELETE)\b[\s\S]*?(;|$)",
+            @"\b(SELECT)\b[\s\S]*?(;|$)",
             System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
         if (!match.Success)
