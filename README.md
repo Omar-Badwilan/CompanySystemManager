@@ -1,6 +1,6 @@
 # CompanySystemManager
 
-**CompanySystemManager** is a lightweight ASP.NET MVC web application designed to manage company departments and employees. It supports full **Create, Read, Update, Delete (CRUD)** operations and offers search functionality for efficient data handling.
+**CompanySystemManager** is a lightweight ASP.NET MVC web application designed to manage company departments and employees. It supports full Create, Read, Update, Delete (CRUD) operations, advanced role-based access control (RBAC), and AJAX-powered search for efficient data handling.
 
 ## 🛠️ Technologies Used
 
@@ -10,6 +10,7 @@
 - **C#**
 - **Razor Views**
 - **Bootstrap** (for styling)
+- **AJAX** (for enhanced search and dynamic updates)
 
 ## ✨ Features
 
@@ -23,9 +24,20 @@
 - List employees per department
 - Complete employee profile management
 
+### 🔑 Authentication & User Management
+- User registration, login, and logout
+- Forgot password functionality
+- Role-based access control (RBAC)
+- User Manager & Role Manager for admin operations
+
+### 🧩 Git Workflow
+- Branch-per-feature development
+- Commit-per-feature/fix workflow
+- Merges handled via dev branch before release to master
+
 ### 🔍 Search Functionality
-- Search departments and employees by name or keyword
-- Fast and efficient filtering
+- AJAX-powered search 
+- Fast and efficient filtering without full page reloads
 
 ## 🚀 Getting Started
 
@@ -58,7 +70,7 @@
 
 ```
 CompanySystemManager/
-├── Controllers/           # Department and Employee controllers
+├── Controllers/          # Department, Employee, User, Role controllers
 ├── Models/               # Entity classes and validation
 ├── Views/                # Razor views for all operations
 ├── Data/                 # Entity Framework context and configurations
@@ -74,24 +86,21 @@ The application uses the following main entities:
 
 - **Department**: Manages company departments
 - **Employee**: Manages employee information with department relationships
+- **User**: Application users
+- **Role**: User roles for access control
 
 ## 🎯 Usage
 
-1. Navigate to the **Departments** section to create and manage departments
-2. Use the **Employees** section to add employees and assign them to departments
-3. Utilize the search functionality to quickly find specific departments or employees
-4. Edit or delete records as needed through the intuitive interface
+1. Navigate to the **Departments** section to create and manage departments.
+2. Use the **Employees** to add, edit, or delete employees and assign them to departments.
+3. Use Users & Roles (admin only) to manage access permissions.
+4. Utilize AJAX search for fast, dynamic filtering.
+5. Edit or delete records via an intuitive interface.
 
 ## 📌 To-Do / Future Enhancements
 
-- [ ] User authentication (login & role-based access)
-- [ ] Pagination for large datasets
-- [ ] Client-side validation improvements
-- [ ] Responsive design enhancements
-- [ ] Export functionality (Excel/PDF)
-- [ ] Advanced filtering options
-- [ ] Employee photo upload
-- [ ] Department hierarchy support
+- [ ] Ai Chatbot.
+
 
 ## 🤝 Contributing
 
