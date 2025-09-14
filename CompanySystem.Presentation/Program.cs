@@ -81,10 +81,25 @@ namespace CompanySystem.Presentation
             //        options.LogoutPath = "/Account/SignIn";
             //    });
 
+            #region Ai
+            builder.Services.AddHttpClient<ChatService>();
+
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
+            #endregion
+
 
             #endregion
 
             var app = builder.Build();
+            app.UseSession();
+
 
             #region Configure the HTTP request pipeline
             if (!app.Environment.IsDevelopment())
