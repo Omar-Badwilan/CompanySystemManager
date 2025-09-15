@@ -11,6 +11,7 @@
 - **Razor Views**
 - **Bootstrap** (for styling)
 - **AJAX** (for enhanced search and dynamic updates)
+- **AI Chatbot** (SQL query generator)
 
 ## ✨ Features
 
@@ -38,6 +39,11 @@
 ### 🔍 Search Functionality
 - AJAX-powered search 
 - Fast and efficient filtering without full page reloads
+  
+### 🤖 AI Chatbot
+- SQL query generator chatbot integrated into the system
+- **Generates only `SELECT` queries** based on user input
+- Helps admins and developers quickly retrieve data without writing SQL manually
 
 ## 🚀 Getting Started
 
@@ -96,10 +102,13 @@ The application uses the following main entities:
 3. Use Users & Roles (admin only) to manage access permissions.
 4. Utilize AJAX search for fast, dynamic filtering.
 5. Edit or delete records via an intuitive interface.
+6. Use the **AI Chatbot** to generate `SELECT` SQL queries quickly for retrieving data.
+
 
 ## 📌 To-Do / Future Enhancements
 
-- [ ] Ai Chatbot.
+- [ ] Complete Reset Password functionality.
+- [ ] Enhance AI Chatbot with advanced query parsing and error handling.
 
 
 ## 🤝 Contributing
