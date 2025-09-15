@@ -4,7 +4,7 @@
 
     public class ChatViewModel
     {
-        public string Message { get; set; }                // User input
-        public List<ChatMessage> ChatHistory { get; set; } = new List<ChatMessage>(); // Conversation history
+        public string Message { get; set; }                
+        public List<ChatMessage> ChatHistory { get; set; } = new List<ChatMessage>(); 
     }
 }
