@@ -1,6 +1,7 @@
 # CompanySystemManager
 
 **CompanySystemManager** is a lightweight ASP.NET MVC web application designed to manage company departments and employees. It supports full Create, Read, Update, Delete (CRUD) operations, advanced role-based access control (RBAC), and AJAX-powered search for efficient data handling.
+
 **🚀 AI Integration**
 The system is enhanced with an AI-powered chatbot that leverages LangChain SQL to translate natural language queries into SQL commands. It includes validation and cleanup steps for accurate results, applies quantization for optimized performance, and was tested externally using ngrok for secure remote access.
 
